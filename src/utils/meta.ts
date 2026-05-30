@@ -23,7 +23,7 @@ export const MODE_META: Record<
   { label: string; emoji: string; short: string }
 > = {
   wheelchair: { label: '휠체어 이용', emoji: '♿', short: '휠체어' },
-  stroller: { label: '유아차 동반', emoji: '👶', short: '유아차' },
+  stroller: { label: '유모차 동반', emoji: '👶', short: '유모차' },
   elderly: { label: '노약자', emoji: '🧓', short: '노약자' },
   visually_impaired: { label: '시각장애', emoji: '🦮', short: '시각장애' },
   all: { label: '전체 보기', emoji: '🧭', short: '전체' },
@@ -142,7 +142,7 @@ export const STATUS_META: Record<
 // ---- 대상자 ----
 export const AFFECTED_META: Record<AffectedUser, { label: string; emoji: string }> = {
   wheelchair: { label: '휠체어', emoji: '♿' },
-  stroller: { label: '유아차', emoji: '👶' },
+  stroller: { label: '유모차', emoji: '👶' },
   elderly: { label: '노약자', emoji: '🧓' },
   visually_impaired: { label: '시각장애', emoji: '🦮' },
   all: { label: '전체', emoji: '🧭' },

@@ -11,7 +11,7 @@ import { ScorePill } from '@/components/common/ui';
 export function capabilityList(f: PublicFacility) {
   return [
     { key: 'wheelchair', label: '휠체어', icon: 'ramp' as const, ok: f.wheelchairAccessible },
-    { key: 'stroller', label: '유아차', icon: 'step' as const, ok: f.strollerAccessible },
+    { key: 'stroller', label: '유모차', icon: 'step' as const, ok: f.strollerAccessible },
     { key: 'guidedog', label: '안내견', icon: 'dog' as const, ok: f.guideDogAllowed === true },
     { key: 'toilet', label: '장애인화장실', icon: 'toilet' as const, ok: f.hasAccessibleToilet },
     { key: 'ramp', label: '경사로', icon: 'ramp' as const, ok: f.hasRamp },

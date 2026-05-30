@@ -36,6 +36,39 @@ function toRad(deg: number): number {
   return (deg * Math.PI) / 180;
 }
 
+/**
+ * 화면 픽셀 거리 기준 단순 군집화 (greedy single-link).
+ * 가까이 겹치는 마커들을 하나의 복합 마커로 묶는다.
+ * 항목은 화면 픽셀 좌표 px/py 를 가져야 한다.
+ */
+export function clusterByPixels<T extends { px: number; py: number }>(
+  items: T[],
+  thresholdPx: number,
+): Array<{ cx: number; cy: number; members: T[] }> {
+  const used = new Array(items.length).fill(false);
+  const clusters: Array<{ cx: number; cy: number; members: T[] }> = [];
+
+  for (let i = 0; i < items.length; i++) {
+    if (used[i]) continue;
+    used[i] = true;
+    const members: T[] = [items[i]];
+    let cx = items[i].px;
+    let cy = items[i].py;
+
+    for (let j = i + 1; j < items.length; j++) {
+      if (used[j]) continue;
+      if (Math.hypot(items[j].px - cx, items[j].py - cy) < thresholdPx) {
+        used[j] = true;
+        members.push(items[j]);
+        cx = members.reduce((s, m) => s + m.px, 0) / members.length;
+        cy = members.reduce((s, m) => s + m.py, 0) / members.length;
+      }
+    }
+    clusters.push({ cx, cy, members });
+  }
+  return clusters;
+}
+
 /** path 점들을 SVG polyline용 "x,y x,y ..." 문자열로 (백분율 기준) */
 export function pathToPoints(path: Array<{ lat: number; lng: number }>): string {
   return path

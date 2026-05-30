@@ -62,9 +62,9 @@ export const BADGE_DEFS: Record<string, BadgeDef> = {
   },
   stroller_guide: {
     id: 'stroller_guide',
-    label: '유아차 길잡이',
+    label: '유모차 길잡이',
     emoji: '👶',
-    description: '유아차 이동 정보를 활발히 공유했어요',
+    description: '유모차 이동 정보를 활발히 공유했어요',
   },
   barrierfree_maker: {
     id: 'barrierfree_maker',

@@ -31,7 +31,7 @@ const FILTERS: FilterDef[] = [
   { key: 'toilet', label: '화장실', kind: 'tag', value: 'toilet' },
   { key: 'tactile', label: '점자블록', kind: 'tag', value: 'tactile' },
   { key: 'guide_dog', label: '안내견', kind: 'tag', value: 'guide_dog' },
-  { key: 'stroller', label: '유아차', kind: 'affected', value: 'stroller' },
+  { key: 'stroller', label: '유모차', kind: 'affected', value: 'stroller' },
   { key: 'wheelchair', label: '휠체어', kind: 'affected', value: 'wheelchair' },
 ];
 

@@ -15,6 +15,8 @@ export function CurrentModeAvatar({
   outfitColor,
   message,
   onClick,
+  x,
+  y,
 }: {
   mode: UserMode;
   lat: number;
@@ -22,14 +24,19 @@ export function CurrentModeAvatar({
   outfitColor: string;
   message?: string;
   onClick?: () => void;
+  /** 화면 백분율 좌표 override (지도 확대/이동 반영). 없으면 기본 투영 */
+  x?: number;
+  y?: number;
 }) {
   const meta = MODE_META[mode];
-  const { x, y } = projectToPercent(lat, lng);
+  const pos = projectToPercent(lat, lng);
+  const left = x ?? pos.x;
+  const top = y ?? pos.y;
 
   return (
     <div
       className="absolute -translate-x-1/2 -translate-y-1/2"
-      style={{ left: `${x}%`, top: `${y}%`, zIndex: 30 }}
+      style={{ left: `${left}%`, top: `${top}%`, zIndex: 30 }}
     >
       {/* 위치 pulse */}
       <span

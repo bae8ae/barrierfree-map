@@ -14,15 +14,22 @@ export function FacilityMarker({
   mode,
   selected,
   onClick,
+  x,
+  y,
 }: {
   facility: PublicFacility;
   mode: UserMode;
   selected?: boolean;
   onClick?: () => void;
+  /** 화면 백분율 좌표 override (지도 확대/이동 반영). 없으면 기본 투영 */
+  x?: number;
+  y?: number;
 }) {
   const meta = FACILITY_META[facility.category];
   const usable = isFacilityUsableForMode(facility, mode);
-  const { x, y } = projectToPercent(facility.lat, facility.lng);
+  const pos = projectToPercent(facility.lat, facility.lng);
+  const left = x ?? pos.x;
+  const top = y ?? pos.y;
 
   return (
     <button
@@ -32,7 +39,7 @@ export function FacilityMarker({
         usable ? '' : ', 현재 모드 이용 어려움'
       }`}
       className="absolute -translate-x-1/2 -translate-y-1/2 transition-transform focus-visible:z-20"
-      style={{ left: `${x}%`, top: `${y}%`, zIndex: selected ? 25 : 10 }}
+      style={{ left: `${left}%`, top: `${top}%`, zIndex: selected ? 25 : 10 }}
     >
       <span className="relative flex flex-col items-center">
         <span

@@ -11,14 +11,21 @@ export function CommunityMarker({
   post,
   selected,
   onClick,
+  x,
+  y,
 }: {
   post: CommunityPost;
   selected?: boolean;
   onClick?: () => void;
+  /** 화면 백분율 좌표 override (지도 확대/이동 반영). 없으면 기본 투영 */
+  x?: number;
+  y?: number;
 }) {
   const type = COMMUNITY_TYPE_META[post.type];
   const status = COMMUNITY_STATUS_META[post.status];
-  const { x, y } = projectToPercent(post.lat, post.lng);
+  const pos = projectToPercent(post.lat, post.lng);
+  const left = x ?? pos.x;
+  const top = y ?? pos.y;
   const isAlert = post.status === 'needs_check' || post.status === 'unavailable';
 
   return (
@@ -27,7 +34,7 @@ export function CommunityMarker({
       onClick={onClick}
       aria-label={`커뮤니티 ${type.label}: ${post.title}, ${status.label}`}
       className="absolute -translate-x-1/2 -translate-y-1/2 focus-visible:z-30"
-      style={{ left: `${x}%`, top: `${y}%`, zIndex: selected ? 27 : 16 }}
+      style={{ left: `${left}%`, top: `${top}%`, zIndex: selected ? 27 : 16 }}
     >
       <span className="relative flex items-center justify-center">
         {isAlert && (

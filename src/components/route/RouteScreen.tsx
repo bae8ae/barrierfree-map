@@ -42,6 +42,7 @@ export function RouteScreen() {
             showAvatar={false}
             showCommunity={false}
             dimContext
+            interactive={false}
           />
           {!selectedRoute && (
             <div className="absolute inset-0 flex items-center justify-center bg-warmwhite/40">

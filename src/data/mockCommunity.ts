@@ -12,7 +12,7 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
     type: 'resolved',
     title: '안암역 3번 출구 엘리베이터 정상 작동 확인했습니다',
     content:
-      '어제 고장났던 엘리베이터, 방금 직접 타봤어요. 정상 작동합니다! 휠체어·유아차 모두 이용 가능해요.',
+      '어제 고장났던 엘리베이터, 방금 직접 타봤어요. 정상 작동합니다! 휠체어·유모차 모두 이용 가능해요.',
     facilityId: 'fac-anam-elv',
     locationName: '안암역 3번 출구',
     lat: 37.5864,
@@ -31,9 +31,9 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
   {
     id: 'cp-2',
     type: 'report',
-    title: '고려대 정문 앞 보도 공사로 유아차 통행이 어려워요',
+    title: '고려대 정문 앞 보도 공사로 유모차 통행이 어려워요',
     content:
-      '정문 버스정류장 쪽 인도가 공사 가림막으로 거의 막혀 있어요. 유아차는 차도로 내려가야 해서 위험합니다. 당분간 후문 쪽 이용을 추천해요.',
+      '정문 버스정류장 쪽 인도가 공사 가림막으로 거의 막혀 있어요. 유모차는 차도로 내려가야 해서 위험합니다. 당분간 후문 쪽 이용을 추천해요.',
     locationName: '고대정문 버스정류장 앞',
     lat: 37.5882,
     lng: 127.0334,
@@ -41,7 +41,7 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
     status: 'unavailable',
     images: ['photo'],
     anonymous: false,
-    authorNickname: '유아차파파',
+    authorNickname: '유모차파파',
     createdAt: '2026-05-29T11:15:00+09:00',
     helpfulCount: 15,
     confirmations: 4,
@@ -136,7 +136,7 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
     type: 'resolved',
     title: '어제 막혀 있던 경사로가 오늘은 이용 가능해졌어요',
     content:
-      '개운산 공원 무장애 산책로 입구 경사로, 어제는 적치물로 막혀 있었는데 오늘 치워졌습니다. 휠체어·유아차 모두 잘 지나가요!',
+      '개운산 공원 무장애 산책로 입구 경사로, 어제는 적치물로 막혀 있었는데 오늘 치워졌습니다. 휠체어·유모차 모두 잘 지나가요!',
     facilityId: 'fac-park-elv',
     locationName: '개운산 공원 무장애 산책로 입구',
     lat: 37.5919,
@@ -155,9 +155,9 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
   {
     id: 'cp-8',
     type: 'question',
-    title: '유아차로 들어갈 수 있는 식당 찾습니다',
+    title: '유모차로 들어갈 수 있는 식당 찾습니다',
     content:
-      '안암동 근처에서 유아차 끌고 들어가기 편한 식당 있을까요? 입구 턱 없고 내부 통로 넓은 곳이면 좋겠어요. 추천 부탁드려요!',
+      '안암동 근처에서 유모차 끌고 들어가기 편한 식당 있을까요? 입구 턱 없고 내부 통로 넓은 곳이면 좋겠어요. 추천 부탁드려요!',
     locationName: '안암동 일대',
     lat: 37.5845,
     lng: 127.0315,
@@ -165,7 +165,7 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
     status: 'needs_check',
     images: [],
     anonymous: false,
-    authorNickname: '유아차파파',
+    authorNickname: '유모차파파',
     createdAt: '2026-05-28T15:40:00+09:00',
     helpfulCount: 5,
     confirmations: 0,
@@ -238,7 +238,7 @@ export const MOCK_COMMUNITY_COMMENTS: CommunityComment[] = [
   {
     id: 'cc-3',
     postId: 'cp-2',
-    content: '후문 쪽은 통행 괜찮나요? 내일 유아차로 가야 해서요.',
+    content: '후문 쪽은 통행 괜찮나요? 내일 유모차로 가야 해서요.',
     authorNickname: '안암주민',
     anonymous: false,
     createdAt: '2026-05-29T11:30:00+09:00',
@@ -265,7 +265,7 @@ export const MOCK_COMMUNITY_COMMENTS: CommunityComment[] = [
   {
     id: 'cc-6',
     postId: 'cp-8',
-    content: '나무 베이커리카페 추천해요! 유아차로 편했어요.',
+    content: '나무 베이커리카페 추천해요! 유모차로 편했어요.',
     authorNickname: '느린걸음',
     anonymous: false,
     createdAt: '2026-05-28T16:00:00+09:00',
