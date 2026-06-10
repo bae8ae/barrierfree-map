@@ -128,7 +128,7 @@ function fastStrategy(mode: TravelMode, hazardCount: number): Strategy {
 }
 
 /** 모드별 맞춤 전략 목록 (추천 + 불편요소별 대안) */
-function modeStrategies(mode: TravelMode, hazardCount: number): Strategy[] {
+function modeStrategies(mode: TravelMode): Strategy[] {
   switch (mode) {
     case 'wheelchair':
       return [
@@ -373,7 +373,7 @@ export async function getAccessibleRoutes(
 
   // 모드별 맞춤 후보 + 공통 빠른 경로
   const strategies = [
-    ...modeStrategies(params.mode, hazardCount),
+    ...modeStrategies(params.mode),
     fastStrategy(params.mode, hazardCount),
   ];
 
