@@ -38,17 +38,40 @@ export async function getReports(filters?: ReportFilters): Promise<UserReport[]>
 }
 
 export async function createReport(
-  input: Omit<UserReport, 'id' | 'createdAt' | 'confirmations' | 'helpfulCount'>,
+  input: Omit<
+    UserReport,
+    | 'id'
+    | 'createdAt'
+    | 'confirmations'
+    | 'helpfulCount'
+    | 'confidence'
+    | 'verifiedCount'
+    | 'trustStatus'
+    | 'lastUpdated'
+  >,
 ): Promise<UserReport> {
+  const now = new Date().toISOString();
   const report: UserReport = {
     ...input,
     id: genId(),
-    createdAt: new Date().toISOString(),
+    createdAt: now,
     confirmations: 0,
     helpfulCount: 0,
+    // 새 제보는 아직 검증 전 — 낮은 신뢰도/확인 필요에서 시작
+    confidence: '낮음',
+    verifiedCount: 1,
+    trustStatus: input.status === 'resolved' ? '해결됨' : '확인 필요',
+    lastUpdated: now,
   };
   db = [report, ...db];
   return delay(report, 400);
+}
+
+/** verifiedCount 기준으로 신뢰도 등급을 다시 매긴다 */
+function gradeConfidence(verifiedCount: number): UserReport['confidence'] {
+  if (verifiedCount >= 6) return '높음';
+  if (verifiedCount >= 3) return '보통';
+  return '낮음';
 }
 
 export async function updateReportStatus(
@@ -57,7 +80,18 @@ export async function updateReportStatus(
 ): Promise<UserReport> {
   const idx = db.findIndex((r) => r.id === id);
   if (idx < 0) throw new Error(`제보를 찾을 수 없습니다: ${id}`);
-  db[idx] = { ...db[idx], status };
+  const trustStatus: UserReport['trustStatus'] =
+    status === 'resolved'
+      ? '해결됨'
+      : status === 'needs_check'
+        ? '확인 필요'
+        : '활성';
+  db[idx] = {
+    ...db[idx],
+    status,
+    trustStatus,
+    lastUpdated: new Date().toISOString(),
+  };
   return delay(db[idx]);
 }
 
@@ -65,6 +99,26 @@ export async function confirmReport(id: string): Promise<UserReport> {
   const idx = db.findIndex((r) => r.id === id);
   if (idx < 0) throw new Error(`제보를 찾을 수 없습니다: ${id}`);
   db[idx] = { ...db[idx], confirmations: db[idx].confirmations + 1 };
+  return delay(db[idx]);
+}
+
+/**
+ * "아직 불편해요" 재확인 — verifiedCount 증가 + 최신 확인 시각 갱신,
+ * 신뢰도 등급/상태를 다시 활성으로 끌어올린다.
+ */
+export async function reaffirmReport(id: string): Promise<UserReport> {
+  const idx = db.findIndex((r) => r.id === id);
+  if (idx < 0) throw new Error(`제보를 찾을 수 없습니다: ${id}`);
+  const verifiedCount = db[idx].verifiedCount + 1;
+  db[idx] = {
+    ...db[idx],
+    verifiedCount,
+    confirmations: db[idx].confirmations + 1,
+    confidence: gradeConfidence(verifiedCount),
+    trustStatus: db[idx].status === 'resolved' ? db[idx].trustStatus : '활성',
+    status: db[idx].status === 'resolved' ? db[idx].status : 'active',
+    lastUpdated: new Date().toISOString(),
+  };
   return delay(db[idx]);
 }
 

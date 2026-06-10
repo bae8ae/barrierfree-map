@@ -4,8 +4,10 @@ import { useStore } from '@/store/useStore';
 import { AppLayout } from '@/components/layout/AppLayout';
 import type { TabKey } from '@/components/layout/BottomNavigation';
 import { Modal } from '@/components/common/Modal';
+import { Icon } from '@/components/common/Icon';
 import { MapScreen } from '@/components/map/MapScreen';
 import { RouteScreen } from '@/components/route/RouteScreen';
+import { GuardianScreen } from '@/components/guardian/GuardianScreen';
 import { CommunityScreen } from '@/components/community/CommunityScreen';
 import { FacilityScreen } from '@/components/facility/FacilityScreen';
 import { MyScreen } from '@/components/my/MyScreen';
@@ -70,6 +72,9 @@ export default function App() {
           <Pane show={tab === 'route'}>
             <RouteScreen />
           </Pane>
+          <Pane show={tab === 'guardian'}>
+            <GuardianScreen />
+          </Pane>
           <Pane show={tab === 'community'}>
             <CommunityScreen
               composerOpen={communityComposerOpen && tab === 'community'}
@@ -124,8 +129,8 @@ function Pane({ show, children }: { show: boolean; children: React.ReactNode }) 
 function LoadingScreen() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 bg-warmwhite">
-      <div className="flex h-16 w-16 animate-idleBob items-center justify-center rounded-full bg-primary-500 text-3xl shadow-float">
-        🧭
+      <div className="flex h-16 w-16 animate-idleBob items-center justify-center rounded-full bg-primary-500 text-white shadow-float">
+        <Icon name="route" size={30} />
       </div>
       <p className="text-sm font-bold text-primary-700">접근성 정보를 불러오는 중…</p>
       <p className="text-xs text-subtle">공공 시설 데이터 + 실시간 제보 결합 중</p>

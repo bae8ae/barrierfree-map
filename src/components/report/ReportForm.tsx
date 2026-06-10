@@ -184,7 +184,7 @@ export function ReportForm({ onDone }: { onDone: () => void }) {
                   color: active ? '#0a8174' : '#5b6675',
                 }}
               >
-                <span aria-hidden>{meta.emoji}</span>
+                <Icon name={meta.icon as never} size={16} />
                 {meta.label}
               </button>
             );

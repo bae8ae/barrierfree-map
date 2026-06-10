@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '@/store/useStore';
-import { REGION_NAME } from '@/data/region';
+import { REGION_NAME, MVP_TEST_REGION_NOTICE } from '@/data/region';
 import { computeAreaScore, isFacilityUsableForMode, scoreGrade } from '@/utils/score';
 import { PrimaryButton } from '@/components/common/ui';
 import { Icon } from '@/components/common/Icon';
@@ -71,6 +71,11 @@ export function MapBottomSheet({
             {/* 핵심 메시지 */}
             <p className="mt-2.5 rounded-2xl bg-primary-50 px-3 py-2 text-[13px] font-semibold leading-snug text-primary-700">
               “시설이 있다는 것보다 중요한 건, 지금 실제로 이동할 수 있는지입니다.”
+            </p>
+
+            {/* MVP 테스트 지역 안내 */}
+            <p className="mt-1.5 text-[11px] font-medium leading-snug text-subtle">
+              {MVP_TEST_REGION_NOTICE}
             </p>
 
             {/* 통계 3분할 */}

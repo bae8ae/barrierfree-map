@@ -19,7 +19,25 @@ export type IconKey =
   | 'cafe'
   | 'hospital'
   | 'culture'
-  | 'route';
+  | 'route'
+  | 'smoking'
+  | 'shield'
+  | 'bell'
+  | 'location'
+  | 'phone'
+  | 'wheelchair'
+  | 'stroller'
+  | 'elderly'
+  | 'blind'
+  | 'pregnant'
+  | 'compass'
+  | 'star'
+  | 'help'
+  | 'check'
+  | 'flag'
+  | 'eye'
+  | 'edit'
+  | 'award';
 
 type Props = {
   name: IconKey;
@@ -200,6 +218,142 @@ function glyph(name: IconKey) {
           <circle cx="6" cy="18" r="2.2" />
           <circle cx="18" cy="6" r="2.2" />
           <path d="M8 16c2-1 3-2 3-5s3-4 5-4" strokeDasharray="0.1 3" />
+        </>
+      );
+    case 'smoking':
+      return (
+        <>
+          <rect x="3" y="13" width="14" height="4" rx="1" />
+          <path d="M19 13v4M21.5 13v4" />
+          <path d="M9 13v-2a2 2 0 0 1 2-2 2 2 0 0 0 2-2" />
+        </>
+      );
+    case 'shield':
+      return (
+        <>
+          <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />
+          <path d="M9 12l2 2 4-4" />
+        </>
+      );
+    case 'bell':
+      return (
+        <>
+          <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z" />
+          <path d="M10 20a2 2 0 0 0 4 0" />
+        </>
+      );
+    case 'location':
+      return (
+        <>
+          <path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z" />
+          <circle cx="12" cy="10" r="2.5" />
+        </>
+      );
+    case 'phone':
+      return (
+        <>
+          <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L17 13l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 6a2 2 0 0 1 1-2z" />
+        </>
+      );
+    case 'wheelchair':
+      return (
+        <>
+          <circle cx="9.5" cy="4" r="1.7" />
+          <path d="M9.5 6.5v5h5l2.5 5" />
+          <circle cx="9" cy="16" r="4.5" />
+          <path d="M14.5 16.5h3.5" />
+        </>
+      );
+    case 'stroller':
+      return (
+        <>
+          <path d="M4 4h2l3 9h7" />
+          <path d="M9 5.5a6 6 0 0 1 6 6H9z" />
+          <circle cx="10" cy="18" r="1.7" />
+          <circle cx="15" cy="18" r="1.7" />
+        </>
+      );
+    case 'elderly':
+      return (
+        <>
+          <circle cx="9" cy="4" r="1.8" />
+          <path d="M9 6.5l-1 5 2 0.5-1 6" />
+          <path d="M8 11.5l4 1" />
+          <path d="M14.5 8v12" />
+        </>
+      );
+    case 'blind':
+      return (
+        <>
+          <circle cx="10" cy="4" r="1.8" />
+          <path d="M10 6.5v6" />
+          <path d="M10 12.5l-2 7M10 12.5l2 7" />
+          <path d="M11 9l-4.5 11.5" />
+        </>
+      );
+    case 'pregnant':
+      return (
+        <>
+          <circle cx="10.5" cy="4" r="1.8" />
+          <path d="M10.5 6.5c-1.2 1.5-1.5 3.5-1.5 5.5" />
+          <path d="M9 9a3.5 3.5 0 0 1 0 6" />
+          <path d="M9 15l-1 5M10.5 15.5l1 4.5" />
+        </>
+      );
+    case 'compass':
+      return (
+        <>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M15 9l-1.8 4.2-4.2 1.8 1.8-4.2z" />
+        </>
+      );
+    case 'star':
+      return (
+        <>
+          <path d="M12 3.5l2.6 5.3 5.9 0.8-4.3 4.1 1 5.8L12 16.8 6.8 19.5l1-5.8L3.5 9.6l5.9-0.8z" />
+        </>
+      );
+    case 'help':
+      return (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.3 9.2a2.7 2.7 0 0 1 5.2 1c0 1.8-2.5 2-2.5 3.8" />
+          <circle cx="12" cy="17.5" r="0.6" fill="currentColor" stroke="none" />
+        </>
+      );
+    case 'check':
+      return (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M8 12.5l2.5 2.5 5-5.5" />
+        </>
+      );
+    case 'flag':
+      return (
+        <>
+          <path d="M6 3v18" />
+          <path d="M6 4h11l-2 3 2 3H6" />
+        </>
+      );
+    case 'eye':
+      return (
+        <>
+          <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z" />
+          <circle cx="12" cy="12" r="2.5" />
+        </>
+      );
+    case 'edit':
+      return (
+        <>
+          <path d="M4 20h16" />
+          <path d="M14 4l4 4-9 9H5v-4z" />
+        </>
+      );
+    case 'award':
+      return (
+        <>
+          <circle cx="12" cy="9" r="5" />
+          <path d="M9 13l-2 7 5-3 5 3-2-7" />
         </>
       );
     default:

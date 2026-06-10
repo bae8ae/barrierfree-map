@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { PublicFacility, RouteOption, UserReport, CommunityPost } from '@/types';
+import type {
+  PublicFacility,
+  RouteOption,
+  UserReport,
+  CommunityPost,
+  SmokingZone,
+} from '@/types';
 import { useStore } from '@/store/useStore';
 import { LANDMARKS, CURRENT_LOCATION } from '@/data/region';
+import { MOCK_SMOKING_ZONES } from '@/data/mockSmokingZones';
 import { projectToPercent, pathToPoints, clamp, clusterByPixels } from '@/utils/geo';
 import {
   facilityToMapFilter,
@@ -10,12 +17,14 @@ import {
   FACILITY_META,
   REPORT_META,
   COMMUNITY_STATUS_META,
+  SMOKING_VISIBLE_MODES,
 } from '@/utils/meta';
 import { FacilityMarker } from '@/components/map/FacilityMarker';
 import { ReportMarker } from '@/components/map/ReportMarker';
 import { CommunityMarker } from '@/components/map/CommunityMarker';
+import { SmokingMarker } from '@/components/map/SmokingMarker';
 import { ClusterMarker } from '@/components/map/ClusterMarker';
-import { CurrentModeAvatar } from '@/components/map/CurrentModeAvatar';
+import { CurrentLocationMarker } from '@/components/map/CurrentLocationMarker';
 
 // ============================================================
 // 커스텀 지도 캔버스
@@ -28,15 +37,15 @@ import { CurrentModeAvatar } from '@/components/map/CurrentModeAvatar';
 
 const LANDMARK_STYLE: Record<
   string,
-  { w: number; h: number; fill: string; label: string }
+  { w: number; h: number; fill: string }
 > = {
-  campus: { w: 30, h: 22, fill: '#dfeee0', label: '🏫' },
-  hospital: { w: 16, h: 14, fill: '#fde4e0', label: '🏥' },
-  park: { w: 22, h: 20, fill: '#d7ecd2', label: '🌳' },
-  station: { w: 10, h: 10, fill: '#dce7fb', label: '🚇' },
-  street: { w: 18, h: 9, fill: '#f3ead9', label: '☕' },
-  residential: { w: 16, h: 12, fill: '#ece7dc', label: '🏘️' },
-  bus: { w: 9, h: 9, fill: '#dce7fb', label: '🚌' },
+  campus: { w: 30, h: 22, fill: '#dfeee0' },
+  hospital: { w: 16, h: 14, fill: '#fde4e0' },
+  park: { w: 22, h: 20, fill: '#d7ecd2' },
+  station: { w: 10, h: 10, fill: '#dce7fb' },
+  street: { w: 18, h: 9, fill: '#f3ead9' },
+  residential: { w: 16, h: 12, fill: '#ece7dc' },
+  bus: { w: 9, h: 9, fill: '#dce7fb' },
 };
 
 const MIN_ZOOM = 1;
@@ -62,6 +71,7 @@ type MapPoint = {
   | { kind: 'facility'; data: PublicFacility }
   | { kind: 'report'; data: UserReport }
   | { kind: 'community'; data: CommunityPost }
+  | { kind: 'smoking'; data: SmokingZone }
 );
 
 function clampCenter(c: Center, zoom: number): Center {
@@ -76,12 +86,13 @@ export function MapView({
   route,
   selectedReportId,
   selectedPostId,
+  selectedSmokingId,
   onSelectFacility,
   onSelectReport,
   onSelectPost,
-  onAvatarClick,
-  avatarMessage,
-  showAvatar = true,
+  onSelectSmoking,
+  onLocationClick,
+  showCurrentLocation = true,
   showCommunity = true,
   dimContext = false,
   interactive = true,
@@ -89,12 +100,13 @@ export function MapView({
   route?: RouteOption | null;
   selectedReportId?: string | null;
   selectedPostId?: string | null;
+  selectedSmokingId?: string | null;
   onSelectFacility?: (id: string) => void;
   onSelectReport?: (id: string) => void;
   onSelectPost?: (id: string) => void;
-  onAvatarClick?: () => void;
-  avatarMessage?: string;
-  showAvatar?: boolean;
+  onSelectSmoking?: (id: string) => void;
+  onLocationClick?: () => void;
+  showCurrentLocation?: boolean;
   showCommunity?: boolean;
   dimContext?: boolean;
   /** 확대/이동·줌 컨트롤 사용 여부 (작은 미리보기 지도에선 끔) */
@@ -106,7 +118,6 @@ export function MapView({
   const mode = useStore((s) => s.mode);
   const mapFilters = useStore((s) => s.mapFilters);
   const selectedFacilityId = useStore((s) => s.selectedFacilityId);
-  const avatar = useStore((s) => s.user.avatar);
 
   // ---- 확대/이동 상태 ----
   const containerRef = useRef<HTMLDivElement>(null);
@@ -173,6 +184,15 @@ export function MapView({
     [communityPosts, mapFilters],
   );
 
+  // 보조 정보(간접흡연 주의 구역)는 임산부/유모차 모드 + 필터 ON 일 때만
+  const visibleSmokingZones = useMemo(
+    () =>
+      SMOKING_VISIBLE_MODES.includes(mode) && mapFilters.smoking
+        ? MOCK_SMOKING_ZONES
+        : [],
+    [mode, mapFilters.smoking],
+  );
+
   // 모든 마커를 화면 좌표로 변환한 통합 점 목록
   const points = useMemo<MapPoint[]>(() => {
     const list: MapPoint[] = [];
@@ -232,17 +252,35 @@ export function MapView({
         });
       }
     }
+    for (const z of visibleSmokingZones) {
+      const v = toViewport(z.lat, z.lng);
+      list.push({
+        kind: 'smoking',
+        key: `s-${z.id}`,
+        data: z,
+        vx: v.x,
+        vy: v.y,
+        bx: v.bx,
+        by: v.by,
+        ...toPx(v.x, v.y),
+        color: '#7c8aa0',
+        alert: false,
+        selected: selectedSmokingId === z.id,
+      });
+    }
     return list;
   }, [
     visibleFacilities,
     visibleReports,
     visiblePosts,
+    visibleSmokingZones,
     showCommunity,
     toViewport,
     size,
     selectedFacilityId,
     selectedReportId,
     selectedPostId,
+    selectedSmokingId,
   ]);
 
   // 선택된 마커는 군집에서 제외하고 항상 개별 표시 (선택 카드 유지)
@@ -357,8 +395,8 @@ export function MapView({
     }
   };
 
-  // 아바타 위치 = 안암역 근처(데모 고정)
-  const avatarV = toViewport(CURRENT_LOCATION.lat, CURRENT_LOCATION.lng);
+  // 현재 위치 = 안암역 근처(데모 고정)
+  const locationV = toViewport(CURRENT_LOCATION.lat, CURRENT_LOCATION.lng);
 
   // 월드(배경·도로·랜드마크) 변환: 마커와 동일한 좌표계
   const worldTransform = `translate(${50 - center.x * zoom}%, ${
@@ -447,16 +485,14 @@ export function MapView({
                 style={{ left: `${x}%`, top: `${y}%`, zIndex: 4 }}
               >
                 <div
-                  className="flex items-center justify-center rounded-2xl"
+                  className="rounded-2xl"
                   style={{
                     width: `${st.w * 3}px`,
                     height: `${st.h * 3}px`,
                     background: st.fill,
                     boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.03)',
                   }}
-                >
-                  <span className="text-lg opacity-70">{st.label}</span>
-                </div>
+                />
                 <span className="mt-0.5 block whitespace-nowrap text-center text-[10px] font-bold text-subtle">
                   {lm.name}
                 </span>
@@ -492,17 +528,14 @@ export function MapView({
       {/* 선택된 마커는 항상 개별 표시 */}
       {selectedPoints.map(renderPoint)}
 
-      {/* 현재 위치 아바타 */}
-      {showAvatar && (
-        <CurrentModeAvatar
-          mode={mode}
+      {/* 현재 위치 마커 */}
+      {showCurrentLocation && (
+        <CurrentLocationMarker
           lat={CURRENT_LOCATION.lat}
           lng={CURRENT_LOCATION.lng}
-          x={avatarV.x}
-          y={avatarV.y}
-          outfitColor={avatar.outfitColor}
-          message={avatarMessage}
-          onClick={onAvatarClick}
+          x={locationV.x}
+          y={locationV.y}
+          onClick={onLocationClick}
         />
       )}
 
@@ -549,6 +582,18 @@ export function MapView({
           x={p.vx}
           y={p.vy}
           onClick={() => onSelectReport?.(p.data.id)}
+        />
+      );
+    }
+    if (p.kind === 'smoking') {
+      return (
+        <SmokingMarker
+          key={p.key}
+          zone={p.data}
+          selected={p.selected}
+          x={p.vx}
+          y={p.vy}
+          onClick={() => onSelectSmoking?.(p.data.id)}
         />
       );
     }

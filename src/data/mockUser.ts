@@ -8,12 +8,6 @@ export const MOCK_USER: User = {
   id: 'user-me',
   nickname: '바퀴달린하루',
   mode: 'wheelchair',
-  avatar: {
-    characterType: 'wheelchair',
-    outfitColor: '#0e9e8b',
-    expression: 'smile',
-    accessory: 'none',
-  },
   contributionScore: 1240,
   reportsCount: 8,
   reviewsCount: 5,
@@ -25,7 +19,7 @@ export const MOCK_USER: User = {
 export type BadgeDef = {
   id: string;
   label: string;
-  emoji: string;
+  icon: string;
   description: string;
 };
 
@@ -33,43 +27,43 @@ export const BADGE_DEFS: Record<string, BadgeDef> = {
   first_report: {
     id: 'first_report',
     label: '첫 제보',
-    emoji: '🌱',
+    icon: 'flag',
     description: '첫 불편 제보를 등록했어요',
   },
   observer: {
     id: 'observer',
     label: '길 위의 관찰자',
-    emoji: '👀',
+    icon: 'eye',
     description: '제보 10건 이상 확인에 참여했어요',
   },
   reporter: {
     id: 'reporter',
     label: '접근성 리포터',
-    emoji: '📝',
+    icon: 'edit',
     description: '제보 5건 이상을 등록했어요',
   },
   elevator_guardian: {
     id: 'elevator_guardian',
     label: '엘리베이터 지킴이',
-    emoji: '🛗',
+    icon: 'elevator',
     description: '엘리베이터 관련 제보로 도움을 주었어요',
   },
   tactile_guardian: {
     id: 'tactile_guardian',
     label: '점자블록 수호자',
-    emoji: '🦯',
+    icon: 'tactile',
     description: '점자블록 문제를 제보해 시각장애인을 도왔어요',
   },
   stroller_guide: {
     id: 'stroller_guide',
     label: '유모차 길잡이',
-    emoji: '👶',
+    icon: 'stroller',
     description: '유모차 이동 정보를 활발히 공유했어요',
   },
   barrierfree_maker: {
     id: 'barrierfree_maker',
     label: '배리어프리 메이커',
-    emoji: '🏅',
+    icon: 'award',
     description: '기여 점수 1000점을 돌파했어요',
   },
 };

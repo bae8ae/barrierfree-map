@@ -5,15 +5,21 @@ import { MapView } from '@/components/map/MapView';
 import { MapBottomSheet } from '@/components/map/MapBottomSheet';
 import { ModeSelector } from '@/components/map/ModeSelector';
 import { CategoryFilter } from '@/components/map/CategoryFilter';
+import { ReportTrustLine, ReportReverify } from '@/components/report/ReportTrust';
 import { CommentSheet } from '@/components/community/CommentSheet';
 import { Modal } from '@/components/common/Modal';
 import { Icon } from '@/components/common/Icon';
+import { MVP_TEST_BADGE } from '@/data/region';
+import { MOCK_SMOKING_ZONES } from '@/data/mockSmokingZones';
 import {
   REPORT_META,
   SEVERITY_META,
   STATUS_META,
   COMMUNITY_TYPE_META,
   COMMUNITY_STATUS_META,
+  MODE_META,
+  MODE_FOCUS_SUMMARY,
+  SMOKING_FILTER_HINT,
   timeAgo,
 } from '@/utils/meta';
 
@@ -43,9 +49,12 @@ export function MapScreen({
   const [modeModal, setModeModal] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [selectedSmokingId, setSelectedSmokingId] = useState<string | null>(null);
   const [commentsPost, setCommentsPost] = useState<CommunityPost | null>(null);
   const selectedReport = reports.find((r) => r.id === selectedReportId) ?? null;
   const selectedPost = communityPosts.find((p) => p.id === selectedPostId) ?? null;
+  const selectedSmoking =
+    MOCK_SMOKING_ZONES.find((z) => z.id === selectedSmokingId) ?? null;
 
   // "지도에서 보기" 진입 시 해당 게시글에 포커스
   useEffect(() => {
@@ -62,20 +71,28 @@ export function MapScreen({
         onSelectFacility={(id) => {
           setSelectedReportId(null);
           setSelectedPostId(null);
+          setSelectedSmokingId(null);
           selectFacility(id);
         }}
         onSelectReport={(id) => {
           setSelectedPostId(null);
+          setSelectedSmokingId(null);
           setSelectedReportId(id);
         }}
         onSelectPost={(id) => {
           setSelectedReportId(null);
+          setSelectedSmokingId(null);
           setSelectedPostId(id);
         }}
-        onAvatarClick={() => setModeModal(true)}
-        avatarMessage="안녕하세요! 오늘도 안전한 길로 안내할게요"
+        onSelectSmoking={(id) => {
+          setSelectedReportId(null);
+          setSelectedPostId(null);
+          setSelectedSmokingId(id);
+        }}
+        onLocationClick={() => setModeModal(true)}
         selectedReportId={selectedReportId}
         selectedPostId={selectedPostId}
+        selectedSmokingId={selectedSmokingId}
       />
 
       {/* 상단 필터 패널 */}
@@ -88,9 +105,16 @@ export function MapScreen({
             <p className="text-sm font-extrabold text-ink">BarrierFree Map</p>
             <p className="text-[10px] font-medium text-subtle">지금 이동 가능한 길</p>
           </div>
+          <span className="ml-auto rounded-full bg-caution-100 px-2.5 py-1 text-[10px] font-bold text-caution-600 shadow-sm">
+            {MVP_TEST_BADGE}
+          </span>
         </div>
         <div className="pointer-events-auto">
           <ModeSelector mode={mode} onChange={setMode} />
+        </div>
+        <div className="pointer-events-auto rounded-xl bg-white/85 px-2.5 py-1 text-[10px] font-semibold leading-snug text-subtle shadow-sm">
+          <span className="font-bold text-primary-700">{MODE_META[mode].label} 모드</span>{' '}
+          · {MODE_FOCUS_SUMMARY[mode]}
         </div>
         <div className="pointer-events-auto">
           <CategoryFilter filters={mapFilters} onToggle={toggleMapFilter} onAll={setAllFilters} />
@@ -115,6 +139,42 @@ export function MapScreen({
             onClose={() => setSelectedPostId(null)}
             onComments={() => setCommentsPost(selectedPost)}
           />
+        </div>
+      )}
+
+      {/* 선택된 간접흡연 주의 구역(보조 정보) 카드 */}
+      {selectedSmoking && (
+        <div className="pointer-events-auto absolute inset-x-3 bottom-[280px] z-40">
+          <div className="animate-popIn rounded-2xl border border-dashed border-[#b8c0cc] bg-white p-3.5 shadow-sheet">
+            <div className="flex items-start gap-2.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-[#7c8aa0] text-[#5b6675]">
+                <Icon name="smoking" size={20} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <span className="rounded-full bg-[#eef0ee] px-2 py-0.5 text-[11px] font-bold text-[#5b6675]">
+                  보조 정보 · 간접흡연 주의 구역
+                </span>
+                <p className="mt-1 truncate text-sm font-extrabold text-ink">
+                  {selectedSmoking.name}
+                </p>
+                <p className="text-[11px] font-medium text-subtle">
+                  노출 정도 {selectedSmoking.intensity === 'high' ? '높음' : selectedSmoking.intensity === 'medium' ? '보통' : '약함'} · {timeAgo(selectedSmoking.lastUpdated)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedSmokingId(null)}
+                aria-label="닫기"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-black/5 text-subtle"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="mt-2 text-[13px] leading-snug text-ink/80">{selectedSmoking.note}</p>
+            <p className="mt-2 rounded-lg bg-[#f3f1ec] px-2.5 py-1.5 text-[11px] font-medium leading-snug text-subtle">
+              {SMOKING_FILTER_HINT}
+            </p>
+          </div>
         </div>
       )}
 
@@ -163,10 +223,10 @@ function CommunityPeek({
     <div className="animate-popIn rounded-2xl border border-black/5 bg-white p-3.5 shadow-sheet">
       <div className="flex items-start gap-2.5">
         <span
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg text-white"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white"
           style={{ background: status.color }}
         >
-          <span aria-hidden>{type.emoji}</span>
+          <Icon name={type.icon as never} size={20} />
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
@@ -184,8 +244,9 @@ function CommunityPeek({
             </span>
           </div>
           <p className="mt-1 truncate text-sm font-extrabold text-ink">{post.title}</p>
-          <p className="text-[11px] font-medium text-subtle">
-            📍 {post.locationName} · {timeAgo(post.createdAt)}
+          <p className="flex items-center gap-1 text-[11px] font-medium text-subtle">
+            <Icon name="location" size={11} />
+            {post.locationName} · {timeAgo(post.createdAt)}
           </p>
         </div>
         <button
@@ -250,8 +311,9 @@ function ReportPeek({ reportId, onClose }: { reportId: string; onClose: () => vo
             </span>
           </div>
           <p className="mt-1 truncate text-sm font-extrabold text-ink">{report.title}</p>
-          <p className="text-[11px] font-medium text-subtle">
-            📍 {report.locationName} · {timeAgo(report.createdAt)}
+          <p className="flex items-center gap-1 text-[11px] font-medium text-subtle">
+            <Icon name="location" size={11} />
+            {report.locationName} · {timeAgo(report.createdAt)}
           </p>
         </div>
         <button
@@ -266,6 +328,10 @@ function ReportPeek({ reportId, onClose }: { reportId: string; onClose: () => vo
       <p className="mt-2 line-clamp-2 text-[13px] leading-snug text-ink/80">
         {report.description}
       </p>
+
+      {/* 신뢰도 요약 (신뢰도·확인 수·사진·최신성) */}
+      <ReportTrustLine report={report} />
+
       <div className="mt-2.5 grid grid-cols-3 gap-1.5">
         <PeekAction
           label={`확인 ${report.confirmations}`}
@@ -282,6 +348,9 @@ function ReportPeek({ reportId, onClose }: { reportId: string; onClose: () => vo
           onClick={() => setReportStatusAction(report.id, 'resolved')}
         />
       </div>
+
+      {/* 오래된/확인 필요 제보 재확인 UX */}
+      <ReportReverify report={report} />
     </div>
   );
 }

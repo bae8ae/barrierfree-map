@@ -27,6 +27,11 @@ const FILTERS: FilterDef[] = [
   { key: 'question', label: '질문', kind: 'type', value: 'question' },
   { key: 'review', label: '후기', kind: 'type', value: 'review' },
   { key: 'resolved', label: '해결됨', kind: 'status', value: 'resolved' },
+  // ---- 보호자 관련 카테고리 ----
+  { key: 'guardian_question', label: '보호자 질문', kind: 'type', value: 'guardian_question' },
+  { key: 'hospital_companion', label: '병원 동행 후기', kind: 'type', value: 'hospital_companion' },
+  { key: 'parent_route', label: '부모님 이동 경로', kind: 'type', value: 'parent_route' },
+  { key: 'stroller_tip', label: '유모차 동행 팁', kind: 'type', value: 'stroller_tip' },
   { key: 'elevator', label: '엘리베이터', kind: 'tag', value: 'elevator' },
   { key: 'toilet', label: '화장실', kind: 'tag', value: 'toilet' },
   { key: 'tactile', label: '점자블록', kind: 'tag', value: 'tactile' },

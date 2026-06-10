@@ -43,7 +43,7 @@ export function CommunityPostCard({
           className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-extrabold"
           style={{ color: type.color, background: type.bg }}
         >
-          <span aria-hidden>{type.emoji}</span>
+          <Icon name={type.icon as never} size={12} />
           {type.label}
         </span>
         <span
@@ -60,16 +60,18 @@ export function CommunityPostCard({
         {post.affectedUsers.map((a) => (
           <span
             key={a}
-            className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-subtle"
+            className="inline-flex items-center gap-1 rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-subtle"
           >
-            {AFFECTED_META[a].emoji} {AFFECTED_META[a].label}
+            <Icon name={AFFECTED_META[a].icon as never} size={12} />
+            {AFFECTED_META[a].label}
           </span>
         ))}
       </div>
 
       {/* 장소 · 거리 · 시간 */}
-      <p className="mt-2 text-[11px] font-medium text-subtle">
-        📍 {post.locationName} · {distanceLabel(post.lat, post.lng)} ·{' '}
+      <p className="mt-2 flex items-center gap-1 text-[11px] font-medium text-subtle">
+        <Icon name="location" size={11} />
+        {post.locationName} · {distanceLabel(post.lat, post.lng)} ·{' '}
         {timeAgo(post.createdAt)} · {post.anonymous ? '익명' : post.authorNickname}
       </p>
 
@@ -92,14 +94,14 @@ export function CommunityPostCard({
           onClick={() => markPostHelpfulAction(post.id)}
           className="flex items-center justify-center gap-1.5 rounded-xl bg-primary-500 px-2 py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary-600"
         >
-          👍 도움돼요 {post.helpfulCount}
+          도움돼요 {post.helpfulCount}
         </button>
         <button
           type="button"
           onClick={() => confirmPostAction(post.id)}
           className="flex items-center justify-center gap-1.5 rounded-xl bg-mint-100 px-2 py-2.5 text-sm font-bold text-mint-600 transition-colors hover:brightness-95"
         >
-          ✓ 나도 확인 {post.confirmations}
+          나도 확인 {post.confirmations}
         </button>
       </div>
 
@@ -110,7 +112,7 @@ export function CommunityPostCard({
           onClick={() => onOpenComments(post)}
           className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[13px] font-bold text-subtle hover:bg-black/5"
         >
-          💬 댓글 {post.commentsCount}
+          댓글 {post.commentsCount}
         </button>
         <button
           type="button"

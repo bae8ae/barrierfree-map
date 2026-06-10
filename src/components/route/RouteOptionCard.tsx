@@ -13,6 +13,9 @@ const BADGE_META: Record<
   recommended: { label: '추천', color: '#0a8174', bg: '#dcf3ee' },
   fast: { label: '빠름', color: '#2563eb', bg: '#dbeafe' },
   safe: { label: '안전·완만', color: '#8f6ae6', bg: '#efeafe' },
+  tactile: { label: '점자블록', color: '#27408b', bg: '#dde6fb' },
+  rest: { label: '휴식 우선', color: '#16a35e', bg: '#dcfce9' },
+  clean: { label: '쾌적', color: '#0a8174', bg: '#dcf3ee' },
 };
 
 export function RouteOptionCard({
@@ -81,6 +84,18 @@ export function RouteOptionCard({
           </Tag>
         )}
       </div>
+
+      {/* 모드별 강조 포인트 (불편요소 해소) */}
+      {route.highlights.length > 0 && (
+        <ul className="mt-2.5 space-y-1">
+          {route.highlights.map((h, i) => (
+            <li key={i} className="flex items-center gap-1.5 text-[13px] font-semibold text-ink/80">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary-400" aria-hidden />
+              {h}
+            </li>
+          ))}
+        </ul>
+      )}
 
       {/* 추천 이유 */}
       <p className="mt-2.5 rounded-xl bg-primary-50 px-3 py-2 text-[13px] font-medium leading-snug text-primary-700">

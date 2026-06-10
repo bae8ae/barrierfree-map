@@ -3,6 +3,13 @@ import type { UserReport } from '@/types';
 // ============================================================
 // 사용자 제보 (실시간 이동 가능성 정보) — 가상 시드 데이터
 // "시설이 있다는 것보다 중요한 건, 지금 실제로 이동할 수 있는지입니다."
+//
+// 각 제보에는 신뢰도 시스템 필드가 포함됩니다.
+//  - confidence: 신뢰도 등급(높음/보통/낮음)
+//  - verifiedCount: "아직 불편해요"로 재확인된 횟수
+//  - trustStatus: 신뢰도 기반 노출 상태
+//  - lastUpdated: 마지막 확인/갱신 시각 (timeAgo 기준일 2026-05-29T15:00)
+//  - expiresInHours: 만료 예정 안내용 (선택)
 // ============================================================
 
 export const MOCK_REPORTS: UserReport[] = [
@@ -16,7 +23,7 @@ export const MOCK_REPORTS: UserReport[] = [
     lng: 127.0298,
     locationName: '안암역 3번 출구',
     severity: 'high',
-    affectedUsers: ['wheelchair', 'stroller', 'elderly'],
+    affectedUsers: ['wheelchair', 'stroller', 'elderly', 'pregnant'],
     status: 'active',
     createdAt: '2026-05-29T08:30:00+09:00',
     confirmations: 7,
@@ -24,6 +31,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: true,
     authorNickname: '바퀴달린하루',
+    confidence: '높음',
+    verifiedCount: 12,
+    trustStatus: '활성',
+    lastUpdated: '2026-05-29T14:45:00+09:00',
   },
   {
     id: 'rep-2',
@@ -43,6 +54,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: true,
     authorNickname: '동네산책러',
+    confidence: '높음',
+    verifiedCount: 8,
+    trustStatus: '활성',
+    lastUpdated: '2026-05-29T13:20:00+09:00',
   },
   {
     id: 'rep-3',
@@ -61,6 +76,10 @@ export const MOCK_REPORTS: UserReport[] = [
     helpfulCount: 6,
     anonymous: true,
     hasPhoto: false,
+    confidence: '보통',
+    verifiedCount: 3,
+    trustStatus: '활성',
+    lastUpdated: '2026-05-29T12:10:00+09:00',
   },
   {
     id: 'rep-4',
@@ -71,7 +90,7 @@ export const MOCK_REPORTS: UserReport[] = [
     lng: 127.0332,
     locationName: '고대정문 버스정류장 앞',
     severity: 'medium',
-    affectedUsers: ['wheelchair', 'stroller', 'visually_impaired'],
+    affectedUsers: ['wheelchair', 'stroller', 'visually_impaired', 'pregnant'],
     status: 'needs_check',
     createdAt: '2026-05-29T09:45:00+09:00',
     confirmations: 2,
@@ -79,6 +98,11 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: true,
     authorNickname: '유모차파파',
+    confidence: '보통',
+    verifiedCount: 2,
+    trustStatus: '확인 필요',
+    lastUpdated: '2026-05-29T09:45:00+09:00',
+    expiresInHours: 6,
   },
   {
     id: 'rep-5',
@@ -90,7 +114,7 @@ export const MOCK_REPORTS: UserReport[] = [
     lng: 127.0324,
     locationName: '고려대 중앙광장 진입로',
     severity: 'medium',
-    affectedUsers: ['wheelchair', 'elderly'],
+    affectedUsers: ['wheelchair', 'elderly', 'pregnant'],
     status: 'active',
     createdAt: '2026-05-28T16:20:00+09:00',
     confirmations: 6,
@@ -98,6 +122,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: false,
     authorNickname: '바퀴달린하루',
+    confidence: '높음',
+    verifiedCount: 9,
+    trustStatus: '활성',
+    lastUpdated: '2026-05-29T11:00:00+09:00',
   },
   {
     id: 'rep-6',
@@ -116,6 +144,11 @@ export const MOCK_REPORTS: UserReport[] = [
     helpfulCount: 3,
     anonymous: true,
     hasPhoto: false,
+    confidence: '낮음',
+    verifiedCount: 1,
+    trustStatus: '확인 필요',
+    lastUpdated: '2026-05-28T14:50:00+09:00',
+    expiresInHours: 4,
   },
   {
     id: 'rep-7',
@@ -134,6 +167,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: true,
     authorNickname: '느린걸음',
+    confidence: '보통',
+    verifiedCount: 4,
+    trustStatus: '활성',
+    lastUpdated: '2026-05-28T18:30:00+09:00',
   },
   {
     id: 'rep-8',
@@ -153,6 +190,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: false,
     authorNickname: '함께걷는길',
+    confidence: '보통',
+    verifiedCount: 2,
+    trustStatus: '반박 있음',
+    lastUpdated: '2026-05-27T10:00:00+09:00',
   },
   {
     id: 'rep-9',
@@ -163,7 +204,7 @@ export const MOCK_REPORTS: UserReport[] = [
     lng: 127.0364,
     locationName: '고려대역 1번 출구',
     severity: 'low',
-    affectedUsers: ['wheelchair', 'stroller', 'elderly'],
+    affectedUsers: ['wheelchair', 'stroller', 'elderly', 'pregnant'],
     status: 'resolved',
     createdAt: '2026-05-28T19:00:00+09:00',
     confirmations: 5,
@@ -171,6 +212,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: false,
     authorNickname: '동네산책러',
+    confidence: '높음',
+    verifiedCount: 5,
+    trustStatus: '해결됨',
+    lastUpdated: '2026-05-28T19:00:00+09:00',
   },
   {
     id: 'rep-10',
@@ -188,6 +233,11 @@ export const MOCK_REPORTS: UserReport[] = [
     helpfulCount: 2,
     anonymous: true,
     hasPhoto: false,
+    confidence: '낮음',
+    verifiedCount: 1,
+    trustStatus: '만료 예정',
+    lastUpdated: '2026-05-27T18:40:00+09:00',
+    expiresInHours: 2,
   },
   {
     id: 'rep-11',
@@ -198,7 +248,7 @@ export const MOCK_REPORTS: UserReport[] = [
     lng: 127.0235,
     locationName: '안암동 원룸촌 골목',
     severity: 'medium',
-    affectedUsers: ['wheelchair', 'stroller'],
+    affectedUsers: ['wheelchair', 'stroller', 'pregnant'],
     status: 'active',
     createdAt: '2026-05-29T07:55:00+09:00',
     confirmations: 2,
@@ -206,6 +256,10 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: true,
     authorNickname: '유모차파파',
+    confidence: '보통',
+    verifiedCount: 3,
+    trustStatus: '활성',
+    lastUpdated: '2026-05-29T10:30:00+09:00',
   },
   {
     id: 'rep-12',
@@ -224,5 +278,9 @@ export const MOCK_REPORTS: UserReport[] = [
     anonymous: false,
     hasPhoto: false,
     authorNickname: '느린걸음',
+    confidence: '보통',
+    verifiedCount: 4,
+    trustStatus: '해결됨',
+    lastUpdated: '2026-05-26T09:00:00+09:00',
   },
 ];

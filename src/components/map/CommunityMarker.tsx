@@ -1,6 +1,7 @@
 import type { CommunityPost } from '@/types';
 import { COMMUNITY_TYPE_META, COMMUNITY_STATUS_META } from '@/utils/meta';
 import { projectToPercent } from '@/utils/geo';
+import { Icon } from '@/components/common/Icon';
 
 // ============================================================
 // 커뮤니티 게시글 마커 (실시간 이용 가능성)
@@ -45,7 +46,7 @@ export function CommunityMarker({
           />
         )}
         <span
-          className="relative flex items-center justify-center rounded-full border-2 border-white text-base shadow-card"
+          className="relative flex items-center justify-center rounded-full border-2 border-white text-white shadow-card"
           style={{
             width: selected ? 38 : 32,
             height: selected ? 38 : 32,
@@ -53,7 +54,7 @@ export function CommunityMarker({
             transform: selected ? 'scale(1.05)' : undefined,
           }}
         >
-          <span aria-hidden>{type.emoji}</span>
+          <Icon name={type.icon as never} size={selected ? 19 : 16} />
         </span>
       </span>
     </button>

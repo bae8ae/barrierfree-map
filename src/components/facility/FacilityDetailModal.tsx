@@ -138,10 +138,11 @@ export function FacilityDetailModal({
               <div key={p.id} className="rounded-xl bg-cream p-3">
                 <div className="flex items-center gap-1.5">
                   <span
-                    className="rounded-full px-2 py-0.5 text-[11px] font-bold"
+                    className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold"
                     style={{ color: t.color, background: t.bg }}
                   >
-                    {t.emoji} {t.label}
+                    <Icon name={t.icon as never} size={12} />
+                    {t.label}
                   </span>
                   <span
                     className="rounded-full px-2 py-0.5 text-[11px] font-bold"

@@ -1,4 +1,5 @@
 import { BADGE_DEFS, ALL_BADGE_IDS } from '@/data/mockUser';
+import { Icon } from '@/components/common/Icon';
 
 // ============================================================
 // 뱃지 목록 (획득/미획득)
@@ -21,11 +22,14 @@ export function BadgeList({ earned }: { earned: string[] }) {
             }}
           >
             <span
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl"
-              style={{ background: has ? '#e6f7f4' : '#e3ded3', filter: has ? 'none' : 'grayscale(1)' }}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+              style={{
+                background: has ? '#e6f7f4' : '#e3ded3',
+                color: has ? '#0a8174' : '#9aa6b2',
+              }}
               aria-hidden
             >
-              {def.emoji}
+              <Icon name={def.icon as never} size={22} />
             </span>
             <div className="min-w-0">
               <p className="truncate text-sm font-extrabold text-ink">{def.label}</p>

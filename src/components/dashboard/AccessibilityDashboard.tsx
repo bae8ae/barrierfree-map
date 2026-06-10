@@ -12,12 +12,13 @@ import {
   Cell,
 } from 'recharts';
 import { useStore } from '@/store/useStore';
-import { LANDMARKS, REGION_NAME } from '@/data/region';
-import { REPORT_META, AFFECTED_META, REPORT_CATEGORY_ORDER } from '@/utils/meta';
+import { LANDMARKS, REGION_NAME, MVP_TEST_REGION_NOTICE } from '@/data/region';
+import { REPORT_META, AFFECTED_META, REPORT_CATEGORY_ORDER, timeAgo } from '@/utils/meta';
 import { computeAreaScore, scoreGrade } from '@/utils/score';
 import { distanceMeters } from '@/utils/geo';
 import { Stat, SectionTitle, ScorePill } from '@/components/common/ui';
 import { Icon } from '@/components/common/Icon';
+import { MOCK_REPEAT_REPORT_ZONES } from '@/data/mockRepeatReports';
 
 // ============================================================
 // 리포트 / 대시보드 (B2G · B2B)
@@ -56,10 +57,12 @@ export function AccessibilityDashboard() {
     }));
 
     // 대상자별 불편 건수
-    const byAffected = (['wheelchair', 'stroller', 'elderly', 'visually_impaired'] as const).map(
+    const byAffected = (
+      ['wheelchair', 'stroller', 'elderly', 'visually_impaired', 'pregnant'] as const
+    ).map(
       (a) => ({
         label: AFFECTED_META[a].label,
-        emoji: AFFECTED_META[a].emoji,
+        icon: AFFECTED_META[a].icon,
         count: reports.filter(
           (r) => r.affectedUsers.includes(a) || r.affectedUsers.includes('all'),
         ).length,
@@ -98,6 +101,13 @@ export function AccessibilityDashboard() {
 
   return (
     <div className="space-y-5">
+      {/* MVP 테스트 지역 안내 */}
+      <div className="flex items-center gap-2 rounded-xl border border-caution-300 bg-caution-100 px-3 py-2">
+        <p className="text-[12px] font-semibold leading-snug text-caution-600">
+          {MVP_TEST_REGION_NOTICE}
+        </p>
+      </div>
+
       {/* 지역 점수 헤더 */}
       <div className="rounded-2xl bg-gradient-to-br from-primary-600 to-primary-500 p-5 text-white shadow-float">
         <p className="text-xs font-semibold text-white/80">{REGION_NAME}</p>
@@ -193,7 +203,9 @@ export function AccessibilityDashboard() {
         <div className="grid grid-cols-2 gap-2.5">
           {data.byAffected.map((d) => (
             <div key={d.label} className="flex items-center gap-3 rounded-2xl bg-white p-3.5 shadow-card">
-              <span className="text-2xl" aria-hidden>{d.emoji}</span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-50 text-primary-600" aria-hidden>
+                <Icon name={d.icon as never} size={22} />
+              </span>
               <div>
                 <p className="text-xl font-extrabold text-ink">{d.count}건</p>
                 <p className="text-xs font-medium text-subtle">{d.label} 관련</p>
@@ -216,6 +228,56 @@ export function AccessibilityDashboard() {
               <ScorePill score={d.score} size="sm" />
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* 반복 제보 구역 (개선 우선순위) */}
+      <section>
+        <SectionTitle hint="제보 수 많은 순">반복 제보 구역</SectionTitle>
+        <p className="mb-2 text-[12px] font-medium text-subtle">
+          같은 구역에서 반복되는 제보를 모아 개선 우선순위를 제시해요. 실제 민원 연동
+          없이 “개선 요청 후보 · 행정 연계 후보”로만 표시합니다.
+        </p>
+        <div className="space-y-2">
+          {MOCK_REPEAT_REPORT_ZONES.map((z) => {
+            const pr =
+              z.priority === '높음'
+                ? { color: '#c83a22', bg: '#ffe6e2' }
+                : z.priority === '중간'
+                  ? { color: '#d99708', bg: '#fef6d8' }
+                  : { color: '#16a35e', bg: '#dcfce9' };
+            return (
+              <div key={z.id} className="rounded-2xl bg-white p-3.5 shadow-card">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-extrabold text-ink">{z.location}</p>
+                    <p className="text-[12px] font-medium text-subtle">
+                      {z.issue} · 최근 제보 {timeAgo(z.lastReportedAt)}
+                    </p>
+                  </div>
+                  <span
+                    className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-extrabold"
+                    style={{ color: pr.color, background: pr.bg }}
+                  >
+                    우선순위 {z.priority}
+                  </span>
+                </div>
+                <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                  <span className="rounded-full bg-coral-100 px-2 py-0.5 text-[11px] font-bold text-coral-700">
+                    제보 {z.count}건
+                  </span>
+                  <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-bold text-primary-700">
+                    개선 요청 후보
+                  </span>
+                  {z.adminCandidate && (
+                    <span className="rounded-full bg-publicblue-100 px-2 py-0.5 text-[11px] font-bold text-publicblue-700">
+                      행정 연계 후보
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 

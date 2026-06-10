@@ -9,6 +9,7 @@ export type UserMode =
   | 'stroller'
   | 'elderly'
   | 'visually_impaired'
+  | 'pregnant'
   | 'all';
 
 /** 제보가 영향을 주는 대상자 */
@@ -17,6 +18,7 @@ export type AffectedUser =
   | 'stroller'
   | 'elderly'
   | 'visually_impaired'
+  | 'pregnant'
   | 'all';
 
 /** 경로/리뷰에서 사용하는 모드 (전체 제외) */
@@ -77,7 +79,25 @@ export type ReportCategory =
   | 'etc';
 
 export type Severity = 'low' | 'medium' | 'high';
+
+/** 내부 이동 로직용 제보 상태 (지도/점수 계산) */
 export type ReportStatus = 'active' | 'resolved' | 'needs_check';
+
+// ------------------------------------------------------------
+// 제보 신뢰도 시스템
+// 같은 위치를 여러 사람이 확인할수록 신뢰도가 올라가고,
+// 시간이 지나면 만료 예정/확인 필요로 내려가 "지금도 유효한지"를 드러낸다.
+// ------------------------------------------------------------
+/** 제보 신뢰도 등급 */
+export type ReportConfidence = '높음' | '보통' | '낮음';
+
+/** 신뢰도 기반 제보 상태 (사용자 노출용 한글 라벨) */
+export type ReportTrustStatus =
+  | '활성'
+  | '확인 필요'
+  | '만료 예정'
+  | '해결됨'
+  | '반박 있음';
 
 export type UserReport = {
   id: string;
@@ -95,8 +115,20 @@ export type UserReport = {
   helpfulCount: number;
   anonymous: boolean;
   /** UI 데모용 - 사진 첨부 placeholder 표시 여부 */
-  hasPhoto?: boolean;
+  hasPhoto: boolean;
   authorNickname?: string;
+
+  // ---- 신뢰도 시스템 필드 ----
+  /** 신뢰도 등급 */
+  confidence: ReportConfidence;
+  /** 다른 사용자가 "아직 불편해요"로 재확인한 횟수 */
+  verifiedCount: number;
+  /** 신뢰도 기반 노출 상태 */
+  trustStatus: ReportTrustStatus;
+  /** 마지막으로 확인/갱신된 시각 (ISO) */
+  lastUpdated: string;
+  /** 만료까지 남은 시간(시간 단위) — 있으면 "만료 예정" 안내에 사용 */
+  expiresInHours?: number;
 };
 
 // ------------------------------------------------------------
@@ -142,8 +174,16 @@ export type RouteOption = {
   warnings: string[];
   reason: string;
   path: Array<{ lat: number; lng: number }>;
-  /** UI 라벨링: 추천/빠른/안전 */
-  badge: 'recommended' | 'fast' | 'safe';
+  /** 이 경로가 해당 모드의 어떤 불편요소를 해소하는지 (모드별로 다르게 강조) */
+  highlights: string[];
+  /** UI 라벨링: 경로 성격 */
+  badge:
+    | 'recommended'
+    | 'fast'
+    | 'safe'
+    | 'tactile'
+    | 'rest'
+    | 'clean';
 };
 
 export type RouteSearchParams = {
@@ -162,12 +202,6 @@ export type User = {
   id: string;
   nickname: string;
   mode: UserMode;
-  avatar: {
-    characterType: string;
-    outfitColor: string;
-    expression: string;
-    accessory: string;
-  };
   contributionScore: number;
   reportsCount: number;
   reviewsCount: number;
@@ -193,7 +227,29 @@ export type MapCategoryFilter =
   | 'step'
   | 'tactile'
   | 'obstacle'
-  | 'guide_dog';
+  | 'guide_dog'
+  /**
+   * 보조 정보: 간접흡연 주의 구역.
+   * 핵심 기능이 아니라 임산부·유모차 사용자의 이동 선택을 돕는 보조 레이어로,
+   * 임산부 모드/유모차 모드에서만 지도에 노출된다.
+   */
+  | 'smoking';
+
+// ------------------------------------------------------------
+// 보조 정보: 간접흡연 주의 구역
+// 임산부·유모차 사용자의 이동 선택을 돕기 위한 보조 데이터.
+// 전체 사용자에게 항상 노출하지 않는다.
+// ------------------------------------------------------------
+export type SmokingZone = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  /** 혼잡/노출 정도 */
+  intensity: 'low' | 'medium' | 'high';
+  note: string;
+  lastUpdated: string;
+};
 
 // ------------------------------------------------------------
 // 커뮤니티 (장소 기반 이동 경험 공유 피드)
@@ -204,7 +260,12 @@ export type CommunityPostType =
   | 'facility_status' // 시설 상태 공유
   | 'review' // 이용 후기
   | 'question' // 질문
-  | 'resolved'; // 해결/복구 알림
+  | 'resolved' // 해결/복구 알림
+  // ---- 보호자 관련 카테고리 ----
+  | 'guardian_question' // 보호자 질문
+  | 'hospital_companion' // 병원 동행 후기
+  | 'parent_route' // 부모님 이동 경로
+  | 'stroller_tip'; // 유모차 동행 팁
 
 export type CommunityPostStatus =
   | 'needs_check' // 확인 필요
@@ -252,3 +313,26 @@ export type CommunityFilters = {
   affectedUser?: Exclude<AffectedUser, 'all'>;
   query?: string;
 };
+
+// ------------------------------------------------------------
+// 보호자 안심 공유 (Mock)
+// 실제 GPS·문자 발송 없이, 사용자가 원할 때 안전한 독립 이동을
+// 보호자와 함께 확인하도록 돕는 선택형 기능.
+// ------------------------------------------------------------
+/** 위치 공유 흐름 단계: 공유 전 → 이동 중 → 목적지 도착 → 공유 종료 */
+export type GuardianSharePhase = 'idle' | 'moving' | 'arrived' | 'ended';
+
+/** 등록된 보호자 (Mock) */
+export type GuardianContact = {
+  id: string;
+  name: string;
+  relation: string;
+  phoneMasked: string;
+};
+
+/** 보호자에게 보낼 알림 설정 */
+export type GuardianAlertKey =
+  | 'arrival' // 목적지 도착 알림
+  | 'offRoute' // 경로 이탈 알림
+  | 'longStop' // 장시간 정지 알림
+  | 'riskZone'; // 위험 구간 진입 알림

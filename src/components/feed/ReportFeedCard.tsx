@@ -42,8 +42,9 @@ export function ReportFeedCard({ report }: { report: UserReport }) {
               {status.label}
             </span>
           </div>
-          <p className="mt-0.5 text-[11px] font-medium text-subtle">
-            📍 {report.locationName} · {timeAgo(report.createdAt)} ·{' '}
+          <p className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-subtle">
+            <Icon name="location" size={11} />
+            {report.locationName} · {timeAgo(report.createdAt)} ·{' '}
             {report.anonymous ? '익명' : report.authorNickname ?? '익명'}
           </p>
         </div>
@@ -57,9 +58,10 @@ export function ReportFeedCard({ report }: { report: UserReport }) {
         {report.affectedUsers.map((a) => (
           <span
             key={a}
-            className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-subtle"
+            className="inline-flex items-center gap-1 rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-subtle"
           >
-            {AFFECTED_META[a].emoji} {AFFECTED_META[a].label}
+            <Icon name={AFFECTED_META[a].icon as never} size={12} />
+            {AFFECTED_META[a].label}
           </span>
         ))}
       </div>

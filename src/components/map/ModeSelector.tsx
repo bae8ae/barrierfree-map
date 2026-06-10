@@ -1,5 +1,6 @@
 import type { UserMode } from '@/types';
 import { MODE_META, MODE_ORDER } from '@/utils/meta';
+import { Icon } from '@/components/common/Icon';
 
 // ============================================================
 // 사용자 이동 모드 선택기
@@ -34,9 +35,7 @@ export function ModeSelector({
                 background: active ? '#e6f7f4' : '#fff',
               }}
             >
-              <span className="text-2xl" aria-hidden>
-                {meta.emoji}
-              </span>
+              <Icon name={meta.icon as never} size={22} />
               <span className="flex-1">
                 <span className="block font-bold text-ink">{meta.label}</span>
               </span>
@@ -71,7 +70,7 @@ export function ModeSelector({
               color: active ? '#fff' : '#3a4452',
             }}
           >
-            <span aria-hidden>{meta.emoji}</span>
+            <Icon name={meta.icon as never} size={16} />
             {meta.short}
           </button>
         );

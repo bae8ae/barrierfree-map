@@ -44,6 +44,9 @@ export function isFacilityUsableForMode(
       return f.elderlyFriendly;
     case 'visually_impaired':
       return f.visuallyImpairedFriendly;
+    case 'pregnant':
+      // 임산부는 유모차·노약자와 유사한 이동 특성(엘리베이터·완경사·휴식 필요)
+      return f.strollerAccessible || f.elderlyFriendly;
     case 'all':
     default:
       return true;

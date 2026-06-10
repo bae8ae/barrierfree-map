@@ -3,6 +3,7 @@ import type { CommunityPost } from '@/types';
 import { useStore, commentsForPost } from '@/store/useStore';
 import { COMMUNITY_TYPE_META, timeAgo } from '@/utils/meta';
 import { Modal } from '@/components/common/Modal';
+import { Icon } from '@/components/common/Icon';
 
 // ============================================================
 // 댓글 시트 (간단한 댓글 목록 + 작성)
@@ -50,10 +51,14 @@ export function CommentSheet({
           className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold"
           style={{ color: type.color, background: type.bg }}
         >
-          {type.emoji} {type.label}
+          <Icon name={type.icon as never} size={12} />
+          {type.label}
         </span>
         <p className="mt-1 text-sm font-bold text-ink">{post.title}</p>
-        <p className="text-[11px] text-subtle">📍 {post.locationName}</p>
+        <p className="mt-0.5 flex items-center gap-1 text-[11px] text-subtle">
+          <Icon name="location" size={11} />
+          {post.locationName}
+        </p>
       </div>
 
       {/* 댓글 목록 */}

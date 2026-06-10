@@ -35,6 +35,7 @@ const AFFECTED_ORDER: AffectedUser[] = [
   'stroller',
   'elderly',
   'visually_impaired',
+  'pregnant',
   'all',
 ];
 
@@ -133,7 +134,7 @@ export function CommunityComposer({
                   color: active ? meta.color : '#3a4452',
                 }}
               >
-                <span aria-hidden>{meta.emoji}</span>
+                <Icon name={meta.icon as never} size={16} />
                 {meta.label}
               </button>
             );
@@ -212,7 +213,7 @@ export function CommunityComposer({
                   color: active ? '#0a8174' : '#5b6675',
                 }}
               >
-                <span aria-hidden>{meta.emoji}</span>
+                <Icon name={meta.icon as never} size={16} />
                 {meta.label}
               </button>
             );

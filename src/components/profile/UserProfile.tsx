@@ -2,10 +2,10 @@ import { useStore } from '@/store/useStore';
 import { MODE_META } from '@/utils/meta';
 import { Stat, SectionTitle } from '@/components/common/ui';
 import { BadgeList } from '@/components/profile/BadgeList';
-import { AvatarCustomizer } from '@/components/profile/AvatarCustomizer';
+import { Icon } from '@/components/common/Icon';
 
 // ============================================================
-// 마이페이지 (프로필 + 기여도 + 뱃지 + 아바타 꾸미기)
+// 마이페이지 (프로필 + 기여도 + 뱃지)
 // ============================================================
 
 export function UserProfile() {
@@ -16,13 +16,8 @@ export function UserProfile() {
     <div className="space-y-5">
       {/* 프로필 헤더 */}
       <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
-        <div
-          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-4 border-white shadow-float"
-          style={{ background: user.avatar.outfitColor }}
-        >
-          <span className="text-3xl" aria-hidden>
-            {MODE_META[mode].emoji}
-          </span>
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-600">
+          <Icon name={MODE_META[mode].icon as never} size={30} />
         </div>
         <div>
           <p className="text-lg font-extrabold text-ink">{user.nickname}</p>
@@ -46,14 +41,8 @@ export function UserProfile() {
         <BadgeList earned={user.badges} />
       </section>
 
-      {/* 아바타 꾸미기 */}
-      <section>
-        <SectionTitle>아바타 꾸미기</SectionTitle>
-        <AvatarCustomizer avatar={user.avatar} />
-      </section>
-
       <p className="pb-2 text-center text-xs text-subtle">
-        당신의 제보 하나하나가 누군가의 이동을 바꿉니다 💚
+        당신의 제보 하나하나가 누군가의 이동을 바꿉니다.
       </p>
     </div>
   );

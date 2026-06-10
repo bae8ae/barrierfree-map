@@ -1,5 +1,6 @@
 import type { AccessibilityReview } from '@/types';
 import { MODE_META, timeAgo } from '@/utils/meta';
+import { Icon } from '@/components/common/Icon';
 
 // ============================================================
 // 시설 접근성 리뷰 카드 (실이용 후기)
@@ -11,8 +12,8 @@ export function ReviewCard({ review }: { review: AccessibilityReview }) {
     <article className="rounded-2xl bg-cream p-3.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-lg" aria-hidden>
-            {meta.emoji}
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-subtle" aria-hidden>
+            <Icon name={meta.icon as never} size={18} />
           </span>
           <div className="leading-tight">
             <p className="text-sm font-bold text-ink">

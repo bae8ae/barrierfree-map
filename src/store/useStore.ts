@@ -20,9 +20,11 @@ import {
   getReports,
   createReport,
   confirmReport,
+  reaffirmReport,
   markReportHelpful,
   updateReportStatus,
 } from '@/services/reportService';
+import { SMOKING_VISIBLE_MODES } from '@/utils/meta';
 import { getAccessibleRoutes } from '@/services/routeService';
 import {
   getCommunityPosts,
@@ -47,7 +49,14 @@ function allFiltersOn(): Record<MapCategoryFilter, boolean> {
 
 type NewReport = Omit<
   UserReport,
-  'id' | 'createdAt' | 'confirmations' | 'helpfulCount'
+  | 'id'
+  | 'createdAt'
+  | 'confirmations'
+  | 'helpfulCount'
+  | 'confidence'
+  | 'verifiedCount'
+  | 'trustStatus'
+  | 'lastUpdated'
 >;
 
 type NewReview = Omit<AccessibilityReview, 'id' | 'createdAt' | 'helpfulCount'>;
@@ -89,12 +98,12 @@ type StoreState = {
   selectFacility: (id: string | null) => void;
   submitReport: (input: NewReport) => Promise<UserReport>;
   confirmReportAction: (id: string) => Promise<void>;
+  reaffirmReportAction: (id: string) => Promise<void>;
   markHelpfulAction: (id: string) => Promise<void>;
   setReportStatusAction: (id: string, status: ReportStatus) => Promise<void>;
   searchRoutes: (params: RouteSearchParams) => Promise<RouteOption[]>;
   addReview: (input: NewReview) => void;
   confirmFacility: (facilityId: string) => void;
-  updateAvatar: (partial: Partial<User['avatar']>) => void;
   showToast: (message: string, tone?: Toast['tone']) => void;
   clearToast: () => void;
 
@@ -121,7 +130,11 @@ export const useStore = create<StoreState>((set, get) => ({
   loaded: false,
   loading: false,
   mode: MOCK_USER.mode,
-  mapFilters: allFiltersOn(),
+  // 간접흡연 보조 레이어는 임산부/유모차 모드에서만 켜둔다
+  mapFilters: {
+    ...allFiltersOn(),
+    smoking: SMOKING_VISIBLE_MODES.includes(MOCK_USER.mode),
+  },
   selectedFacilityId: null,
   routes: [],
   routesLoading: false,
@@ -143,14 +156,12 @@ export const useStore = create<StoreState>((set, get) => ({
   setMode: (mode) =>
     set((s) => ({
       mode,
-      user: {
-        ...s.user,
-        mode,
-        avatar: {
-          ...s.user.avatar,
-          characterType: mode === 'all' ? 'explorer' : mode,
-        },
+      // 간접흡연 보조 정보는 임산부/유모차 모드에서만 노출
+      mapFilters: {
+        ...s.mapFilters,
+        smoking: SMOKING_VISIBLE_MODES.includes(mode),
       },
+      user: { ...s.user, mode },
     })),
 
   toggleMapFilter: (key) =>
@@ -192,6 +203,17 @@ export const useStore = create<StoreState>((set, get) => ({
       reports: s.reports.map((r) => (r.id === id ? updated : r)),
     }));
     get().showToast('확인해 주셔서 고마워요. 제보 신뢰도가 올라갔어요.', 'info');
+  },
+
+  reaffirmReportAction: async (id) => {
+    const updated = await reaffirmReport(id);
+    set((s) => ({
+      reports: s.reports.map((r) => (r.id === id ? updated : r)),
+    }));
+    get().showToast(
+      `아직 불편하군요. ${updated.verifiedCount}명이 확인했어요 — 신뢰도를 갱신했어요.`,
+      'info',
+    );
   },
 
   markHelpfulAction: async (id) => {
@@ -251,9 +273,6 @@ export const useStore = create<StoreState>((set, get) => ({
     }));
     get().showToast('이용 가능 확인 고마워요! 최신 확인 시간이 갱신됐어요.', 'success');
   },
-
-  updateAvatar: (partial) =>
-    set((s) => ({ user: { ...s.user, avatar: { ...s.user.avatar, ...partial } } })),
 
   showToast: (message, tone = 'info') =>
     set({ toast: { id: ++toastSeq, message, tone } }),

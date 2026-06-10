@@ -39,7 +39,7 @@ export function RouteScreen() {
         <div className="relative mb-4 h-44 overflow-hidden rounded-2xl shadow-card">
           <MapView
             route={selectedRoute}
-            showAvatar={false}
+            showCurrentLocation={false}
             showCommunity={false}
             dimContext
             interactive={false}

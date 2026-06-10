@@ -3,6 +3,8 @@ import type {
   ReportCategory,
   Severity,
   ReportStatus,
+  ReportConfidence,
+  ReportTrustStatus,
   UserMode,
   AffectedUser,
   TravelMode,
@@ -20,13 +22,14 @@ import type {
 // ---- 사용자 모드 ----
 export const MODE_META: Record<
   UserMode,
-  { label: string; emoji: string; short: string }
+  { label: string; icon: string; short: string }
 > = {
-  wheelchair: { label: '휠체어 이용', emoji: '♿', short: '휠체어' },
-  stroller: { label: '유모차 동반', emoji: '👶', short: '유모차' },
-  elderly: { label: '노약자', emoji: '🧓', short: '노약자' },
-  visually_impaired: { label: '시각장애', emoji: '🦮', short: '시각장애' },
-  all: { label: '전체 보기', emoji: '🧭', short: '전체' },
+  wheelchair: { label: '휠체어 이용', icon: 'wheelchair', short: '휠체어' },
+  stroller: { label: '유모차 동반', icon: 'stroller', short: '유모차' },
+  elderly: { label: '노약자', icon: 'elderly', short: '노약자' },
+  visually_impaired: { label: '시각장애', icon: 'blind', short: '시각장애' },
+  pregnant: { label: '임산부', icon: 'pregnant', short: '임산부' },
+  all: { label: '전체 보기', icon: 'compass', short: '전체' },
 };
 
 export const MODE_ORDER: UserMode[] = [
@@ -35,6 +38,7 @@ export const MODE_ORDER: UserMode[] = [
   'stroller',
   'elderly',
   'visually_impaired',
+  'pregnant',
 ];
 
 export const TRAVEL_MODE_ORDER: TravelMode[] = [
@@ -42,7 +46,43 @@ export const TRAVEL_MODE_ORDER: TravelMode[] = [
   'stroller',
   'elderly',
   'visually_impaired',
+  'pregnant',
 ];
+
+/**
+ * 모드별로 지도에서 강조되는 카테고리 (우선순위 순).
+ * 모드를 바꾸면 필터 칩 순서와 강조 표시가 이 정의에 따라 달라진다.
+ * 실제 알고리즘은 단순히 category/tags 기준 필터링이며,
+ * "지금 이 사용자에게 중요한 정보"를 앞쪽에 노출하는 것이 목적이다.
+ */
+export const MODE_EMPHASIS: Record<UserMode, MapCategoryFilter[]> = {
+  // 계단·턱, 엘리베이터 고장, 경사로, 휠체어 진입
+  wheelchair: ['step', 'elevator', 'ramp', 'obstacle'],
+  // 엘리베이터, 유모차 진입, 보도(경사로), 간접흡연 주의 구역
+  stroller: ['elevator', 'ramp', 'smoking', 'obstacle'],
+  // 급경사, 긴 보행 거리, 휴식, 안전한 횡단보도
+  elderly: ['step', 'ramp', 'elevator', 'construction'],
+  // 점자블록, 음향신호기, 보행 장애물, 안내견 동반
+  visually_impaired: ['tactile', 'guide_dog', 'obstacle', 'construction'],
+  // 엘리베이터, 휴식, 급경사, 혼잡, 간접흡연 주의 구역
+  pregnant: ['elevator', 'smoking', 'step', 'ramp'],
+  all: [],
+};
+
+/** 간접흡연 주의 구역(보조 정보)이 노출되는 모드 */
+export const SMOKING_VISIBLE_MODES: UserMode[] = ['stroller', 'pregnant'];
+
+/** 모드별로 강조하는 정보 요약 (UI 안내 문구용) */
+export const MODE_FOCUS_SUMMARY: Record<UserMode, string> = {
+  wheelchair: '계단·턱, 엘리베이터 고장, 경사로, 휠체어 진입 가능 여부를 강조해요.',
+  stroller:
+    '엘리베이터, 유모차 진입, 보도 폭, 간접흡연 주의 구역(보조)을 강조해요.',
+  elderly: '급경사, 긴 보행 거리, 휴식 공간, 안전한 횡단보도를 강조해요.',
+  visually_impaired: '점자블록, 음향신호기, 보행 장애물, 안내견 동반을 강조해요.',
+  pregnant:
+    '엘리베이터, 휴식 공간, 급경사, 혼잡 구간, 간접흡연 주의 구역(보조)을 강조해요.',
+  all: '모든 접근성 정보를 한 번에 살펴봐요.',
+};
 
 // ---- 공공시설 카테고리 ----
 export const FACILITY_META: Record<
@@ -106,6 +146,7 @@ export const MAP_FILTER_META: Record<
   tactile: { label: '점자블록', icon: 'tactile', color: '#27408b' },
   obstacle: { label: '장애물', icon: 'warning', color: '#ed4f34' },
   guide_dog: { label: '안내견', icon: 'dog', color: '#8f6ae6' },
+  smoking: { label: '보조 정보: 간접흡연 주의 구역', icon: 'smoking', color: '#7c8aa0' },
 };
 
 export const MAP_FILTER_ORDER: MapCategoryFilter[] = [
@@ -117,7 +158,16 @@ export const MAP_FILTER_ORDER: MapCategoryFilter[] = [
   'tactile',
   'obstacle',
   'guide_dog',
+  'smoking',
 ];
+
+/** 간접흡연 주의 구역 안내 문구 (보조 정보임을 명확히) */
+export const SMOKING_FILTER_HINT =
+  '간접흡연 주의 구역은 임산부·유모차 사용자의 이동 선택을 돕기 위한 보조 정보입니다.';
+
+/** 임산부/유모차 모드가 아닐 때 간접흡연 필터 비활성 안내 */
+export const SMOKING_DISABLED_HINT =
+  '이 정보는 임산부 모드와 유모차 모드에서 제공됩니다.';
 
 // ---- 심각도 ----
 export const SEVERITY_META: Record<
@@ -139,13 +189,36 @@ export const STATUS_META: Record<
   needs_check: { label: '확인 필요', color: '#d99708', bg: '#fef6d8' },
 };
 
+// ---- 제보 신뢰도 등급 ----
+export const CONFIDENCE_META: Record<
+  ReportConfidence,
+  { label: string; color: string; bg: string }
+> = {
+  높음: { label: '신뢰도 높음', color: '#0a8174', bg: '#dcf3ee' },
+  보통: { label: '신뢰도 보통', color: '#d99708', bg: '#fef6d8' },
+  낮음: { label: '신뢰도 낮음', color: '#8a93a0', bg: '#eef0ee' },
+};
+
+// ---- 신뢰도 기반 제보 상태 ----
+export const TRUST_STATUS_META: Record<
+  ReportTrustStatus,
+  { label: string; color: string; bg: string }
+> = {
+  활성: { label: '활성', color: '#c83a22', bg: '#ffe6e2' },
+  '확인 필요': { label: '확인 필요', color: '#d99708', bg: '#fef6d8' },
+  '만료 예정': { label: '만료 예정', color: '#a16207', bg: '#fdf0d5' },
+  해결됨: { label: '해결됨', color: '#16a35e', bg: '#dcfce9' },
+  '반박 있음': { label: '반박 있음', color: '#6b46c1', bg: '#efeafe' },
+};
+
 // ---- 대상자 ----
-export const AFFECTED_META: Record<AffectedUser, { label: string; emoji: string }> = {
-  wheelchair: { label: '휠체어', emoji: '♿' },
-  stroller: { label: '유모차', emoji: '👶' },
-  elderly: { label: '노약자', emoji: '🧓' },
-  visually_impaired: { label: '시각장애', emoji: '🦮' },
-  all: { label: '전체', emoji: '🧭' },
+export const AFFECTED_META: Record<AffectedUser, { label: string; icon: string }> = {
+  wheelchair: { label: '휠체어', icon: 'wheelchair' },
+  stroller: { label: '유모차', icon: 'stroller' },
+  elderly: { label: '노약자', icon: 'elderly' },
+  visually_impaired: { label: '시각장애', icon: 'blind' },
+  pregnant: { label: '임산부', icon: 'pregnant' },
+  all: { label: '전체', icon: 'compass' },
 };
 
 // ---- 경로 우선순위 ----
@@ -216,13 +289,18 @@ export function facilityToMapFilter(cat: FacilityCategory): MapCategoryFilter | 
 // ---- 게시글 유형 ----
 export const COMMUNITY_TYPE_META: Record<
   CommunityPostType,
-  { label: string; emoji: string; color: string; bg: string }
+  { label: string; icon: string; color: string; bg: string }
 > = {
-  report: { label: '실시간 제보', emoji: '📍', color: '#c83a22', bg: '#ffe6e2' },
-  facility_status: { label: '시설 상태', emoji: '🛗', color: '#2563eb', bg: '#dbeafe' },
-  review: { label: '이용 후기', emoji: '⭐', color: '#8f6ae6', bg: '#efeafe' },
-  question: { label: '질문', emoji: '❓', color: '#d99708', bg: '#fef6d8' },
-  resolved: { label: '해결·복구', emoji: '✅', color: '#16a35e', bg: '#dcfce9' },
+  report: { label: '실시간 제보', icon: 'location', color: '#c83a22', bg: '#ffe6e2' },
+  facility_status: { label: '시설 상태', icon: 'elevator', color: '#2563eb', bg: '#dbeafe' },
+  review: { label: '이용 후기', icon: 'star', color: '#8f6ae6', bg: '#efeafe' },
+  question: { label: '질문', icon: 'help', color: '#d99708', bg: '#fef6d8' },
+  resolved: { label: '해결·복구', icon: 'check', color: '#16a35e', bg: '#dcfce9' },
+  // ---- 보호자 관련 카테고리 ----
+  guardian_question: { label: '보호자 질문', icon: 'shield', color: '#0a8174', bg: '#dcf3ee' },
+  hospital_companion: { label: '병원 동행 후기', icon: 'hospital', color: '#ed4f34', bg: '#ffe6e2' },
+  parent_route: { label: '부모님 이동 경로', icon: 'elderly', color: '#2563eb', bg: '#dbeafe' },
+  stroller_tip: { label: '유모차 동행 팁', icon: 'stroller', color: '#8f6ae6', bg: '#efeafe' },
 };
 
 export const COMMUNITY_TYPE_ORDER: CommunityPostType[] = [
@@ -231,6 +309,18 @@ export const COMMUNITY_TYPE_ORDER: CommunityPostType[] = [
   'review',
   'question',
   'resolved',
+  'guardian_question',
+  'hospital_companion',
+  'parent_route',
+  'stroller_tip',
+];
+
+/** 보호자 관련 커뮤니티 카테고리 (필터/안내용) */
+export const GUARDIAN_COMMUNITY_TYPES: CommunityPostType[] = [
+  'guardian_question',
+  'hospital_companion',
+  'parent_route',
+  'stroller_tip',
 ];
 
 // ---- 게시글 상태 ----
