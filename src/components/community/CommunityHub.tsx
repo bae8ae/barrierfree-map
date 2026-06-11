@@ -21,10 +21,13 @@ export function CommunityHub({
   composerOpen,
   setComposerOpen,
   onViewOnMap,
+  onOpenGuardian,
 }: {
   composerOpen: boolean;
   setComposerOpen: (v: boolean) => void;
   onViewOnMap: (post: CommunityPost) => void;
+  /** 보호자 질문 글에서 "안심 공유 열기" → 마이 탭 안심 공유 섹션 */
+  onOpenGuardian: () => void;
 }) {
   const [section, setSection] = useState<Section>('community');
 
@@ -50,6 +53,7 @@ export function CommunityHub({
             composerOpen={composerOpen}
             setComposerOpen={setComposerOpen}
             onViewOnMap={onViewOnMap}
+            onOpenGuardian={onOpenGuardian}
           />
         ) : (
           <FacilityScreen />

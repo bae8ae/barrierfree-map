@@ -24,10 +24,13 @@ export function CommunityPostCard({
   post,
   onOpenComments,
   onViewOnMap,
+  onOpenGuardian,
 }: {
   post: CommunityPost;
   onOpenComments: (post: CommunityPost) => void;
   onViewOnMap: (post: CommunityPost) => void;
+  /** 보호자 질문 글에서 안심 공유 기능으로 바로 이동 */
+  onOpenGuardian?: () => void;
 }) {
   const markPostHelpfulAction = useStore((s) => s.markPostHelpfulAction);
   const confirmPostAction = useStore((s) => s.confirmPostAction);
@@ -78,6 +81,25 @@ export function CommunityPostCard({
       {/* 제목 / 본문 */}
       <h3 className="mt-1.5 text-[15px] font-extrabold leading-snug text-ink">{post.title}</h3>
       <p className="mt-1 text-[13px] leading-snug text-ink/80">{post.content}</p>
+
+      {/* 보호자 질문 → 이미 제공 중인 안심 공유 기능으로 안내 */}
+      {post.type === 'guardian_question' && onOpenGuardian && (
+        <div className="mt-2.5 flex items-center gap-2.5 rounded-xl bg-primary-50 px-3 py-2.5">
+          <span className="text-primary-600">
+            <Icon name="shield" size={18} />
+          </span>
+          <p className="flex-1 text-[12px] font-semibold leading-snug text-primary-700">
+            도착 알림·실시간 위치 공유는 <b>안심 공유</b> 기능으로 이미 쓸 수 있어요.
+          </p>
+          <button
+            type="button"
+            onClick={onOpenGuardian}
+            className="shrink-0 rounded-full bg-primary-500 px-3 py-1.5 text-[11px] font-bold text-white transition-colors hover:bg-primary-600"
+          >
+            열어보기
+          </button>
+        </div>
+      )}
 
       {/* 사진 placeholder */}
       {post.images.length > 0 && (

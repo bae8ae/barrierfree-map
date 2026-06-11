@@ -137,10 +137,15 @@ export function MapView({
     });
     map.attributionControl.setPrefix(false);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: MAX_ZOOM,
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map);
+    // CARTO Voyager: OSM 기본 타일보다 정돈된 라이트 스타일 (키 불필요)
+    L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+      {
+        subdomains: 'abcd',
+        maxZoom: MAX_ZOOM,
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+      },
+    ).addTo(map);
 
     mapRef.current = map;
 

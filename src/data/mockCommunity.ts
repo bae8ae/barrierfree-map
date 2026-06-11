@@ -265,14 +265,15 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
     lat: 37.5848,
     lng: 127.0282,
     affectedUsers: ['elderly'],
-    status: 'needs_check',
+    // 도착 알림은 이미 "마이 → 안심 공유" 기능으로 제공됨 → 해결됨 처리
+    status: 'resolved',
     images: [],
     anonymous: false,
     authorNickname: '안암주민',
     createdAt: '2026-05-29T10:05:00+09:00',
     helpfulCount: 21,
     confirmations: 0,
-    commentsCount: 5,
+    commentsCount: 6,
     tags: [],
   },
   {
@@ -299,6 +300,16 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
 ];
 
 export const MOCK_COMMUNITY_COMMENTS: CommunityComment[] = [
+  {
+    id: 'cc-13-1',
+    postId: 'cp-13',
+    content:
+      '그 기능 이미 있어요! 마이 탭 → 안심 공유에서 부모님 휴대폰으로 위치 공유를 시작하면 도착 알림·경로 이탈 알림이 보호자에게 자동으로 와요. 저희 집은 이걸로 마중 걱정을 덜었습니다.',
+    authorNickname: '느린걸음',
+    anonymous: false,
+    createdAt: '2026-05-29T10:40:00+09:00',
+    helpfulCount: 9,
+  },
   {
     id: 'cc-1',
     postId: 'cp-1',

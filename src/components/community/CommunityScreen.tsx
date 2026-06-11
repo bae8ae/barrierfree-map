@@ -44,10 +44,13 @@ export function CommunityScreen({
   composerOpen,
   setComposerOpen,
   onViewOnMap,
+  onOpenGuardian,
 }: {
   composerOpen: boolean;
   setComposerOpen: (v: boolean) => void;
   onViewOnMap: (post: CommunityPost) => void;
+  /** 보호자 질문 글에서 안심 공유 기능으로 바로 이동 */
+  onOpenGuardian?: () => void;
 }) {
   const posts = useStore((s) => s.communityPosts);
   const [filterKey, setFilterKey] = useState('all');
@@ -141,6 +144,7 @@ export function CommunityScreen({
                 post={p}
                 onOpenComments={setCommentsPost}
                 onViewOnMap={onViewOnMap}
+                onOpenGuardian={onOpenGuardian}
               />
             ))
           )}

@@ -8,7 +8,7 @@ import { Icon } from '@/components/common/Icon';
 import { MapScreen } from '@/components/map/MapScreen';
 import { RouteScreen } from '@/components/route/RouteScreen';
 import { CommunityHub } from '@/components/community/CommunityHub';
-import { MyScreen } from '@/components/my/MyScreen';
+import { MyScreen, type MySection } from '@/components/my/MyScreen';
 import { FacilityDetailModal } from '@/components/facility/FacilityDetailModal';
 import {
   CommunityComposer,
@@ -27,6 +27,7 @@ export default function App() {
   const focusPostOnMap = useStore((s) => s.focusPostOnMap);
 
   const [tab, setTab] = useState<TabKey>('map');
+  const [mySection, setMySection] = useState<MySection>('profile');
   const [communityComposerOpen, setCommunityComposerOpen] = useState(false);
   const [prefill, setPrefill] = useState<ComposerPrefill | undefined>(undefined);
 
@@ -58,6 +59,12 @@ export default function App() {
     setTab('map');
   };
 
+  // 보호자 질문(도착 알림 등) → 마이 탭의 안심 공유 섹션으로 바로 이동
+  const openGuardian = () => {
+    setMySection('guardian');
+    setTab('my');
+  };
+
   return (
     <AppLayout active={tab} onChange={setTab}>
       {!loaded ? (
@@ -75,10 +82,11 @@ export default function App() {
               composerOpen={communityComposerOpen && tab === 'community'}
               setComposerOpen={setCommunityComposerOpen}
               onViewOnMap={viewPostOnMap}
+              onOpenGuardian={openGuardian}
             />
           </Pane>
           <Pane show={tab === 'my'}>
-            <MyScreen />
+            <MyScreen section={mySection} onSectionChange={setMySection} />
           </Pane>
         </>
       )}

@@ -10,17 +10,24 @@ import { Icon } from '@/components/common/Icon';
 // 마이 탭 — 내 정보 / 안심 공유 두 섹션을 세그먼트로 전환
 // 내 정보: 사용자 프로필 + (관리자/지자체용) 접근성 리포트
 // 안심 공유: 보호자 위치 공유 모드
+// 섹션 상태는 App 이 들고 있어 다른 화면(커뮤니티 보호자 질문 등)에서
+// "안심 공유 열기"로 바로 진입할 수 있다.
 // ============================================================
 
-type Section = 'profile' | 'guardian';
+export type MySection = 'profile' | 'guardian';
 
-const SUBTITLE: Record<Section, string> = {
+const SUBTITLE: Record<MySection, string> = {
   profile: '나의 기여와 동네 접근성 리포트',
   guardian: '보호자와 함께 안전하게 이동해요',
 };
 
-export function MyScreen() {
-  const [section, setSection] = useState<Section>('profile');
+export function MyScreen({
+  section,
+  onSectionChange,
+}: {
+  section: MySection;
+  onSectionChange: (s: MySection) => void;
+}) {
   const [reportOpen, setReportOpen] = useState(false);
 
   return (
@@ -31,7 +38,7 @@ export function MyScreen() {
         <SegmentedControl
           ariaLabel="마이페이지 섹션 전환"
           value={section}
-          onChange={setSection}
+          onChange={onSectionChange}
           options={[
             { key: 'profile', label: '내 정보', icon: 'star' },
             { key: 'guardian', label: '안심 공유', icon: 'shield' },
