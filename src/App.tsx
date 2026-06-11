@@ -7,9 +7,7 @@ import { Modal } from '@/components/common/Modal';
 import { Icon } from '@/components/common/Icon';
 import { MapScreen } from '@/components/map/MapScreen';
 import { RouteScreen } from '@/components/route/RouteScreen';
-import { GuardianScreen } from '@/components/guardian/GuardianScreen';
-import { CommunityScreen } from '@/components/community/CommunityScreen';
-import { FacilityScreen } from '@/components/facility/FacilityScreen';
+import { CommunityHub } from '@/components/community/CommunityHub';
 import { MyScreen } from '@/components/my/MyScreen';
 import { FacilityDetailModal } from '@/components/facility/FacilityDetailModal';
 import {
@@ -72,18 +70,12 @@ export default function App() {
           <Pane show={tab === 'route'}>
             <RouteScreen />
           </Pane>
-          <Pane show={tab === 'guardian'}>
-            <GuardianScreen />
-          </Pane>
           <Pane show={tab === 'community'}>
-            <CommunityScreen
+            <CommunityHub
               composerOpen={communityComposerOpen && tab === 'community'}
               setComposerOpen={setCommunityComposerOpen}
               onViewOnMap={viewPostOnMap}
             />
-          </Pane>
-          <Pane show={tab === 'facility'}>
-            <FacilityScreen />
           </Pane>
           <Pane show={tab === 'my'}>
             <MyScreen />

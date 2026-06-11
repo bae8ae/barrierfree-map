@@ -156,6 +156,47 @@ export function SectionTitle({
   );
 }
 
+/** 탭 안에서 기능을 나누는 세그먼트 컨트롤 */
+export function SegmentedControl<T extends string>({
+  value,
+  onChange,
+  options,
+  ariaLabel,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  options: { key: T; label: string; icon?: IconKey }[];
+  ariaLabel: string;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label={ariaLabel}
+      className="grid gap-1 rounded-2xl bg-[#ece8dc] p-1"
+      style={{ gridTemplateColumns: `repeat(${options.length}, 1fr)` }}
+    >
+      {options.map((o) => {
+        const active = o.key === value;
+        return (
+          <button
+            key={o.key}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(o.key)}
+            className={`flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
+              active ? 'bg-white text-primary-700 shadow-card' : 'text-subtle'
+            }`}
+          >
+            {o.icon ? <Icon name={o.icon} size={16} /> : null}
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** 빈 상태 */
 export function EmptyState({ icon, title, desc }: { icon: IconKey; title: string; desc?: string }) {
   return (

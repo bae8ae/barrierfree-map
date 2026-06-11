@@ -50,6 +50,8 @@ const LANDMARK_STYLE: Record<
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 6;
+// 인터랙티브 지도의 시작 배율: 현재 위치 주변이 바로 보이고 드래그 이동이 가능
+const INITIAL_ZOOM = 1.8;
 // 마커 지름(약 32px)보다 가까우면 겹친다고 보고 군집화
 const CLUSTER_PX = 34;
 
@@ -96,6 +98,7 @@ export function MapView({
   showCommunity = true,
   dimContext = false,
   interactive = true,
+  controlsBottom = 16,
 }: {
   route?: RouteOption | null;
   selectedReportId?: string | null;
@@ -111,6 +114,8 @@ export function MapView({
   dimContext?: boolean;
   /** 확대/이동·줌 컨트롤 사용 여부 (작은 미리보기 지도에선 끔) */
   interactive?: boolean;
+  /** 줌 컨트롤의 bottom 오프셋(px). 바텀시트 높이에 맞춰 띄운다 */
+  controlsBottom?: number;
 }) {
   const facilities = useStore((s) => s.facilities);
   const reports = useStore((s) => s.reports);
@@ -120,10 +125,18 @@ export function MapView({
   const selectedFacilityId = useStore((s) => s.selectedFacilityId);
 
   // ---- 확대/이동 상태 ----
+  // 인터랙티브 지도는 현재 위치 주변을 확대한 상태로 시작 (드래그 이동 가능)
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const [zoom, setZoom] = useState(MIN_ZOOM);
-  const [center, setCenter] = useState<Center>({ x: 50, y: 50 });
+  const [zoom, setZoom] = useState(interactive ? INITIAL_ZOOM : MIN_ZOOM);
+  const [center, setCenter] = useState<Center>(() =>
+    interactive
+      ? clampCenter(
+          projectToPercent(CURRENT_LOCATION.lat, CURRENT_LOCATION.lng),
+          INITIAL_ZOOM,
+        )
+      : { x: 50, y: 50 },
+  );
 
   // 콜백/리스너에서 최신 값을 읽기 위한 ref 미러
   const zoomRef = useRef(zoom);
@@ -364,7 +377,6 @@ export function MapView({
   const onPointerDown = (e: React.PointerEvent) => {
     if (!interactive) return;
     if ((e.target as HTMLElement).closest('button')) return;
-    if (zoomRef.current <= MIN_ZOOM) return; // 전체 보기에선 이동 불필요
     drag.current = { x: e.clientX, y: e.clientY, center: centerRef.current };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
@@ -408,7 +420,7 @@ export function MapView({
       ref={containerRef}
       className="absolute inset-0 overflow-hidden bg-[#eef0e8]"
       style={{
-        cursor: interactive && zoom > MIN_ZOOM ? 'grab' : 'default',
+        cursor: interactive ? 'grab' : 'default',
         touchAction: interactive ? 'none' : undefined,
       }}
       onPointerDown={onPointerDown}
@@ -539,9 +551,12 @@ export function MapView({
         />
       )}
 
-      {/* 확대/축소 컨트롤 */}
+      {/* 확대/축소 컨트롤 (바텀시트 높이를 따라 이동) */}
       {interactive && (
-      <div className="pointer-events-auto absolute right-3 bottom-[300px] z-30 flex flex-col gap-1.5">
+      <div
+        className="pointer-events-auto absolute right-3 z-30 flex flex-col gap-1.5 transition-[bottom] duration-200"
+        style={{ bottom: controlsBottom }}
+      >
         <ZoomButton label="확대" onClick={() => zoomBy(1.6)} disabled={zoom >= MAX_ZOOM}>
           +
         </ZoomButton>

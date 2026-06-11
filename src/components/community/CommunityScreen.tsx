@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { CommunityPost } from '@/types';
 import { useStore } from '@/store/useStore';
-import { ScreenHeader } from '@/components/layout/ScreenHeader';
 import { Modal } from '@/components/common/Modal';
 import { Icon } from '@/components/common/Icon';
 import { EmptyState } from '@/components/common/ui';
@@ -10,7 +9,8 @@ import { CommentSheet } from '@/components/community/CommentSheet';
 import { CommunityComposer } from '@/components/community/CommunityComposer';
 
 // ============================================================
-// 커뮤니티 탭 — 장소 기반 이동 경험 공유 피드
+// 커뮤니티 화면 — 장소 기반 이동 경험 공유 피드
+// (커뮤니티·시설 통합 탭 안에서 렌더되어 헤더는 CommunityHub 가 담당)
 // ============================================================
 
 type FilterDef =
@@ -80,19 +80,7 @@ export function CommunityScreen({
 
   return (
     <div className="flex h-full flex-col">
-      <ScreenHeader title="커뮤니티" subtitle="지금 이용 가능한지, 함께 확인해요." />
-
       <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-28 pt-3">
-        {/* 온보딩 카드 */}
-        <div className="mb-3 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-500 p-4 text-white shadow-float">
-          <p className="text-sm font-bold leading-snug">
-            누군가의 이동을 더 쉽게 만드는 실시간 정보 공유
-          </p>
-          <p className="mt-1 text-xs font-medium text-white/85">
-            공공데이터는 시설의 존재를, 커뮤니티는 실제 이용 가능 여부를 알려줍니다.
-          </p>
-        </div>
-
         {/* 검색창 */}
         <div className="mb-3 flex items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2.5 shadow-sm">
           <span className="text-subtle">

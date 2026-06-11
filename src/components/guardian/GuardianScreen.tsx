@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import type { GuardianAlertKey, GuardianSharePhase } from '@/types';
-import { ScreenHeader } from '@/components/layout/ScreenHeader';
 import { Modal } from '@/components/common/Modal';
 import { Icon } from '@/components/common/Icon';
 import { PrimaryButton, SectionTitle } from '@/components/common/ui';
@@ -14,7 +13,7 @@ import {
 } from '@/data/mockGuardian';
 
 // ============================================================
-// 보호자 안심 공유 모드
+// 보호자 안심 공유 모드 (마이 탭 안의 "안심 공유" 섹션)
 // 실제 GPS·문자 발송 없이 Mock 흐름으로
 // "공유 전 → 이동 중 → 목적지 도착 → 공유 종료"를 보여준다.
 //
@@ -92,9 +91,7 @@ export function GuardianScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <ScreenHeader title="안심 공유" subtitle="보호자와 함께 안전하게 이동해요" />
-
-      <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-28 pt-3">
+      <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8 pt-3">
         {/* 안내 배너 */}
         <div className="mb-3 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-500 p-4 text-white shadow-float">
           <div className="flex items-center gap-2">

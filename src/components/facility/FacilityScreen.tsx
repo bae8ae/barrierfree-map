@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import type { FacilityCategory } from '@/types';
 import { useStore } from '@/store/useStore';
 import { FACILITY_META } from '@/utils/meta';
-import { ScreenHeader } from '@/components/layout/ScreenHeader';
 import { FacilityCard } from '@/components/facility/FacilityCard';
 import { EmptyState } from '@/components/common/ui';
 
@@ -37,11 +36,6 @@ export function FacilityScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <ScreenHeader
-        title="접근성 시설"
-        subtitle="공공 데이터와 실이용 후기를 함께"
-      />
-
       <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-6 pt-3">
         {/* 카테고리 필터 */}
         <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4">

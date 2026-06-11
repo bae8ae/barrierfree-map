@@ -17,15 +17,14 @@ import {
   STATUS_META,
   COMMUNITY_TYPE_META,
   COMMUNITY_STATUS_META,
-  MODE_META,
-  MODE_FOCUS_SUMMARY,
   SMOKING_FILTER_HINT,
   timeAgo,
 } from '@/utils/meta';
 
 // ============================================================
 // 지도 화면 (앱 첫 화면)
-// 상단: 모드 필터 + 카테고리 필터 / 중앙: 지도 / 하단: 바텀시트
+// 상단: 모드 필터 + 카테고리 필터 / 중앙: 지도 / 하단: 드래그 바텀시트
+// 플로팅 요소(줌 버튼·선택 카드)는 시트 높이를 따라 움직인다.
 // ============================================================
 
 export function MapScreen({
@@ -47,6 +46,7 @@ export function MapScreen({
   const clearMapFocus = useStore((s) => s.clearMapFocus);
 
   const [modeModal, setModeModal] = useState(false);
+  const [sheetHeight, setSheetHeight] = useState(280);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [selectedSmokingId, setSelectedSmokingId] = useState<string | null>(null);
@@ -93,28 +93,22 @@ export function MapScreen({
         selectedReportId={selectedReportId}
         selectedPostId={selectedPostId}
         selectedSmokingId={selectedSmokingId}
+        controlsBottom={sheetHeight + 12}
       />
 
-      {/* 상단 필터 패널 */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 bg-gradient-to-b from-warmwhite/95 via-warmwhite/80 to-transparent px-3 pb-5 pt-3">
+      {/* 상단 필터 패널 (지도가 최대한 보이도록 콤팩트하게) */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-1.5 bg-gradient-to-b from-warmwhite/95 via-warmwhite/70 to-transparent px-3 pb-4 pt-2">
         <div className="pointer-events-auto flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-500 text-white shadow-float">
-            <Icon name="route" size={18} />
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-500 text-white shadow-float">
+            <Icon name="route" size={16} />
           </div>
-          <div className="leading-tight">
-            <p className="text-sm font-extrabold text-ink">BarrierFree Map</p>
-            <p className="text-[10px] font-medium text-subtle">지금 이동 가능한 길</p>
-          </div>
+          <p className="text-sm font-extrabold leading-none text-ink">BarrierFree Map</p>
           <span className="ml-auto rounded-full bg-caution-100 px-2.5 py-1 text-[10px] font-bold text-caution-600 shadow-sm">
             {MVP_TEST_BADGE}
           </span>
         </div>
         <div className="pointer-events-auto">
           <ModeSelector mode={mode} onChange={setMode} />
-        </div>
-        <div className="pointer-events-auto rounded-xl bg-white/85 px-2.5 py-1 text-[10px] font-semibold leading-snug text-subtle shadow-sm">
-          <span className="font-bold text-primary-700">{MODE_META[mode].label} 모드</span>{' '}
-          · {MODE_FOCUS_SUMMARY[mode]}
         </div>
         <div className="pointer-events-auto">
           <CategoryFilter filters={mapFilters} onToggle={toggleMapFilter} onAll={setAllFilters} />
@@ -123,7 +117,7 @@ export function MapScreen({
 
       {/* 선택된 제보 플로팅 카드 */}
       {selectedReport && (
-        <div className="pointer-events-auto absolute inset-x-3 bottom-[280px] z-40">
+        <div className="pointer-events-auto absolute inset-x-3 z-40" style={{ bottom: sheetHeight + 12 }}>
           <ReportPeek
             reportId={selectedReport.id}
             onClose={() => setSelectedReportId(null)}
@@ -133,7 +127,7 @@ export function MapScreen({
 
       {/* 선택된 커뮤니티 글 플로팅 카드 */}
       {selectedPost && (
-        <div className="pointer-events-auto absolute inset-x-3 bottom-[280px] z-40">
+        <div className="pointer-events-auto absolute inset-x-3 z-40" style={{ bottom: sheetHeight + 12 }}>
           <CommunityPeek
             postId={selectedPost.id}
             onClose={() => setSelectedPostId(null)}
@@ -144,7 +138,7 @@ export function MapScreen({
 
       {/* 선택된 간접흡연 주의 구역(보조 정보) 카드 */}
       {selectedSmoking && (
-        <div className="pointer-events-auto absolute inset-x-3 bottom-[280px] z-40">
+        <div className="pointer-events-auto absolute inset-x-3 z-40" style={{ bottom: sheetHeight + 12 }}>
           <div className="animate-popIn rounded-2xl border border-dashed border-[#b8c0cc] bg-white p-3.5 shadow-sheet">
             <div className="flex items-start gap-2.5">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-[#7c8aa0] text-[#5b6675]">
@@ -178,7 +172,7 @@ export function MapScreen({
         </div>
       )}
 
-      <MapBottomSheet onRoute={onRoute} onReport={onReport} />
+      <MapBottomSheet onRoute={onRoute} onReport={onReport} onHeightChange={setSheetHeight} />
 
       {/* 모드 변경 모달 */}
       <Modal open={modeModal} onClose={() => setModeModal(false)} title="이동 모드 선택">
