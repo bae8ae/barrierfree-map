@@ -69,7 +69,7 @@ export function ReportMarker({
         )}
         {resolved && (
           <span
-            className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-mint-600 text-[9px] font-bold text-white"
+            className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary-600 text-[9px] font-bold text-white"
             aria-hidden
           >
             ✓

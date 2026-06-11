@@ -59,10 +59,10 @@ export function scoreGrade(score: number): {
   color: string;
   bg: string;
 } {
-  if (score >= 80) return { label: '이동 원활', color: '#0a8174', bg: '#dcfce9' };
-  if (score >= 60) return { label: '대체로 양호', color: '#16a35e', bg: '#e6f7f4' };
-  if (score >= 40) return { label: '주의 필요', color: '#d99708', bg: '#fef6d8' };
-  return { label: '이동 어려움', color: '#c83a22', bg: '#ffe6e2' };
+  if (score >= 80) return { label: '이동 원활', color: '#0a8174', bg: '#e3f2ef' };
+  if (score >= 60) return { label: '대체로 양호', color: '#0e9e8b', bg: '#e6f7f4' };
+  if (score >= 40) return { label: '주의 필요', color: '#a16207', bg: '#f7eed7' };
+  return { label: '이동 어려움', color: '#c0452f', bg: '#fbe9e5' };
 }
 
 /** 제보가 특정 모드에 영향을 주는지 */

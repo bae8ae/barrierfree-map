@@ -102,14 +102,14 @@ export function AccessibilityDashboard() {
   return (
     <div className="space-y-5">
       {/* MVP 테스트 지역 안내 */}
-      <div className="flex items-center gap-2 rounded-xl border border-caution-300 bg-caution-100 px-3 py-2">
-        <p className="text-[12px] font-semibold leading-snug text-caution-600">
+      <div className="flex items-center gap-2 rounded-xl border border-black/5 bg-white px-3 py-2">
+        <p className="text-[12px] font-semibold leading-snug text-subtle">
           {MVP_TEST_REGION_NOTICE}
         </p>
       </div>
 
       {/* 지역 점수 헤더 */}
-      <div className="rounded-2xl bg-gradient-to-br from-primary-600 to-primary-500 p-5 text-white shadow-float">
+      <div className="rounded-2xl bg-primary-600 p-5 text-white shadow-card">
         <p className="text-xs font-semibold text-white/80">{REGION_NAME}</p>
         <p className="text-sm font-bold">지역 접근성 종합 점수</p>
         <div className="mt-1 flex items-end gap-2">
@@ -242,10 +242,10 @@ export function AccessibilityDashboard() {
           {MOCK_REPEAT_REPORT_ZONES.map((z) => {
             const pr =
               z.priority === '높음'
-                ? { color: '#c83a22', bg: '#ffe6e2' }
+                ? { color: '#c0452f', bg: '#fbe9e5' }
                 : z.priority === '중간'
-                  ? { color: '#d99708', bg: '#fef6d8' }
-                  : { color: '#16a35e', bg: '#dcfce9' };
+                  ? { color: '#a16207', bg: '#f7eed7' }
+                  : { color: '#5b6675', bg: '#eef0ee' };
             return (
               <div key={z.id} className="rounded-2xl bg-white p-3.5 shadow-card">
                 <div className="flex items-start justify-between gap-2">
@@ -263,14 +263,14 @@ export function AccessibilityDashboard() {
                   </span>
                 </div>
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                  <span className="rounded-full bg-coral-100 px-2 py-0.5 text-[11px] font-bold text-coral-700">
+                  <span className="rounded-full bg-[#fbe9e5] px-2 py-0.5 text-[11px] font-bold text-[#c0452f]">
                     제보 {z.count}건
                   </span>
                   <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-bold text-primary-700">
                     개선 요청 후보
                   </span>
                   {z.adminCandidate && (
-                    <span className="rounded-full bg-publicblue-100 px-2 py-0.5 text-[11px] font-bold text-publicblue-700">
+                    <span className="rounded-full bg-[#eef1f4] px-2 py-0.5 text-[11px] font-bold text-[#5c708a]">
                       행정 연계 후보
                     </span>
                   )}
@@ -283,18 +283,16 @@ export function AccessibilityDashboard() {
 
       {/* B2G / B2B 메시지 */}
       <section className="space-y-3">
-        <div className="rounded-2xl border border-publicblue-300 bg-publicblue-100 p-4">
-          <p className="mb-1 text-sm font-extrabold text-publicblue-700">B2G · 지자체용</p>
-          <p className="text-[13px] leading-snug text-publicblue-700/90">
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card">
+          <p className="mb-1 text-sm font-extrabold text-ink">B2G · 지자체용</p>
+          <p className="text-[13px] leading-snug text-subtle">
             이 데이터는 지자체가 보도 정비, 경사로 설치, 엘리베이터 관리, 점자블록 개선
             우선순위를 정하는 데 활용될 수 있어요.
           </p>
         </div>
-        <div className="rounded-2xl border border-lavender-300 bg-lavender-100 p-4">
-          <p className="mb-1 text-sm font-extrabold" style={{ color: '#6b46c1' }}>
-            B2B · 시설 운영자용
-          </p>
-          <p className="text-[13px] leading-snug" style={{ color: '#6b46c1' }}>
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card">
+          <p className="mb-1 text-sm font-extrabold text-ink">B2B · 시설 운영자용</p>
+          <p className="text-[13px] leading-snug text-subtle">
             시설 운영자는 실제 사용자 리뷰를 기반으로 접근성을 개선하고, 배리어프리 친화
             시설로 노출될 수 있어요.
           </p>

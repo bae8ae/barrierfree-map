@@ -76,7 +76,7 @@ export function FacilityDetailModal({
 
       {/* 공공 데이터 출처 */}
       <div className="mt-3 flex items-center gap-2 text-xs">
-        <span className="rounded-full bg-publicblue-100 px-2.5 py-1 font-bold text-publicblue-700">
+        <span className="rounded-full bg-[#eef1f4] px-2.5 py-1 font-bold text-[#5c708a]">
           공공 API 기반 정보
         </span>
         <span className="text-subtle">최근 확인 {timeAgo(facility.lastUpdated)}</span>
@@ -95,7 +95,7 @@ export function FacilityDetailModal({
             <span className="flex-1 text-[13px] font-semibold text-ink">{c.label}</span>
             <span
               className="text-xs font-extrabold"
-              style={{ color: c.ok ? '#16a35e' : '#9aa6b2' }}
+              style={{ color: c.ok ? '#0a8174' : '#9aa6b2' }}
             >
               {c.ok ? '가능 ✓' : '없음'}
             </span>
@@ -229,8 +229,8 @@ function SmallAction({
 }) {
   const styles: Record<string, { bg: string; color: string }> = {
     default: { bg: '#f1ede4', color: '#3a4452' },
-    mint: { bg: '#dcfce9', color: '#16a35e' },
-    coral: { bg: '#ffe6e2', color: '#c83a22' },
+    mint: { bg: '#e3f2ef', color: '#0a8174' },
+    coral: { bg: '#fbe9e5', color: '#c0452f' },
   };
   const s = styles[tone];
   return (

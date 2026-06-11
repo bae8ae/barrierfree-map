@@ -10,12 +10,13 @@ const BADGE_META: Record<
   RouteOption['badge'],
   { label: string; color: string; bg: string }
 > = {
-  recommended: { label: '추천', color: '#0a8174', bg: '#dcf3ee' },
-  fast: { label: '빠름', color: '#2563eb', bg: '#dbeafe' },
-  safe: { label: '안전·완만', color: '#8f6ae6', bg: '#efeafe' },
-  tactile: { label: '점자블록', color: '#27408b', bg: '#dde6fb' },
-  rest: { label: '휴식 우선', color: '#16a35e', bg: '#dcfce9' },
-  clean: { label: '쾌적', color: '#0a8174', bg: '#dcf3ee' },
+  // 추천만 틸로 강조, 나머지 성격 배지는 중립색 (라벨이 의미를 전달)
+  recommended: { label: '추천', color: '#0a8174', bg: '#e3f2ef' },
+  fast: { label: '빠름', color: '#4a5563', bg: '#f0ede5' },
+  safe: { label: '안전·완만', color: '#4a5563', bg: '#f0ede5' },
+  tactile: { label: '점자블록', color: '#4a5563', bg: '#f0ede5' },
+  rest: { label: '휴식 우선', color: '#4a5563', bg: '#f0ede5' },
+  clean: { label: '쾌적', color: '#4a5563', bg: '#f0ede5' },
 };
 
 export function RouteOptionCard({
@@ -65,20 +66,20 @@ export function RouteOptionCard({
 
       {/* 속성 태그 */}
       <div className="mt-2.5 flex flex-wrap gap-1.5">
-        <Tag color={route.avoidsStairs ? '#16a35e' : '#c83a22'} bg={route.avoidsStairs ? '#dcfce9' : '#ffe6e2'}>
+        <Tag color={route.avoidsStairs ? '#0a8174' : '#c0452f'} bg={route.avoidsStairs ? '#e3f2ef' : '#fbe9e5'}>
           <Icon name="step" size={13} />
           {route.avoidsStairs ? '계단·턱 회피' : '계단 포함'}
         </Tag>
-        <Tag color="#2563eb" bg="#dbeafe">
+        <Tag>
           <Icon name="elevator" size={13} />
           엘리베이터 {route.elevatorCount}회
         </Tag>
-        <Tag color="#d99708" bg="#fef6d8">
+        <Tag>
           <Icon name="slope" size={13} />
           경사 {route.slopeSections}구간
         </Tag>
         {route.avoidedReports > 0 && (
-          <Tag color="#0a8174" bg="#dcf3ee">
+          <Tag color="#0a8174" bg="#e3f2ef">
             <Icon name="warning" size={13} />
             제보 {route.avoidedReports}곳 회피
           </Tag>

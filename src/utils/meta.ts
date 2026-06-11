@@ -17,7 +17,31 @@ import type {
 // ============================================================
 // 라벨 / 색상 / 아이콘 메타데이터
 // 색상만으로 정보를 구분하지 않도록 항상 라벨/아이콘과 병행
+//
+// 색 사용 원칙 (깔끔한 팔레트):
+// - 틸(primary)  : 브랜드 · 이용 가능 · 해결됨 · 활성 UI
+// - 슬레이트 중립 : 카테고리/유형 구분 (아이콘·라벨이 의미를 전달)
+// - 빨강(머티드)  : 위험 · 불편 제보 · 이용 어려움에만
+// - 앰버(머티드)  : 확인 필요 · 주의에만
 // ============================================================
+
+// 공통 팔레트 토큰
+const C = {
+  teal: '#0a8174',
+  tealBg: '#e3f2ef',
+  slate: '#4a5563',
+  slateBg: '#f0ede5',
+  gray: '#5b6675',
+  grayBg: '#eef0ee',
+  grayLight: '#8a93a0',
+  red: '#c0452f',
+  redBg: '#fbe9e5',
+  redMarker: '#d9573f',
+  amber: '#a16207',
+  amberBg: '#f7eed7',
+  facility: '#5c708a', // 공공시설 마커 (차분한 블루 슬레이트)
+  aux: '#7c8aa0', // 보조 정보
+};
 
 // ---- 사용자 모드 ----
 export const MODE_META: Record<
@@ -89,16 +113,17 @@ export const FACILITY_META: Record<
   FacilityCategory,
   { label: string; icon: string; color: string }
 > = {
-  elevator: { label: '엘리베이터', icon: 'elevator', color: '#3b82f6' },
-  accessible_toilet: { label: '장애인 화장실', icon: 'toilet', color: '#0e9e8b' },
-  ramp: { label: '경사로', icon: 'ramp', color: '#8f6ae6' },
-  subway: { label: '지하철역', icon: 'subway', color: '#2563eb' },
-  bus_stop: { label: '저상버스 정류장', icon: 'bus', color: '#2563eb' },
-  public_building: { label: '공공시설', icon: 'building', color: '#3b82f6' },
-  restaurant: { label: '음식점', icon: 'restaurant', color: '#16a35e' },
-  cafe: { label: '카페', icon: 'cafe', color: '#16a35e' },
-  hospital: { label: '병원', icon: 'hospital', color: '#ed4f34' },
-  culture: { label: '문화시설', icon: 'culture', color: '#8f6ae6' },
+  // 공공시설(정적 데이터)은 모두 하나의 차분한 색 — 종류는 아이콘으로 구분
+  elevator: { label: '엘리베이터', icon: 'elevator', color: C.facility },
+  accessible_toilet: { label: '장애인 화장실', icon: 'toilet', color: C.facility },
+  ramp: { label: '경사로', icon: 'ramp', color: C.facility },
+  subway: { label: '지하철역', icon: 'subway', color: C.facility },
+  bus_stop: { label: '저상버스 정류장', icon: 'bus', color: C.facility },
+  public_building: { label: '공공시설', icon: 'building', color: C.facility },
+  restaurant: { label: '음식점', icon: 'restaurant', color: C.facility },
+  cafe: { label: '카페', icon: 'cafe', color: C.facility },
+  hospital: { label: '병원', icon: 'hospital', color: C.facility },
+  culture: { label: '문화시설', icon: 'culture', color: C.facility },
 };
 
 // ---- 제보 카테고리 ----
@@ -106,17 +131,18 @@ export const REPORT_META: Record<
   ReportCategory,
   { label: string; icon: string; color: string }
 > = {
-  elevator_outage: { label: '엘리베이터 고장', icon: 'elevator', color: '#ed4f34' },
-  construction: { label: '공사/보도 차단', icon: 'construction', color: '#f5b921' },
-  curb_step: { label: '턱/계단', icon: 'step', color: '#ff6b52' },
-  steep_slope: { label: '급경사', icon: 'slope', color: '#ff6b52' },
-  tactile_block: { label: '점자블록 문제', icon: 'tactile', color: '#27408b' },
-  obstacle: { label: '장애물/적치물', icon: 'warning', color: '#ed4f34' },
-  toilet_issue: { label: '장애인 화장실 문제', icon: 'toilet', color: '#ff6b52' },
-  guide_dog_issue: { label: '안내견 출입 문제', icon: 'dog', color: '#8f6ae6' },
-  ramp_issue: { label: '경사로 이용 어려움', icon: 'ramp', color: '#ff6b52' },
-  slippery: { label: '길 미끄러움', icon: 'water', color: '#3b82f6' },
-  etc: { label: '기타 이동 불편', icon: 'warning', color: '#5b6675' },
+  // 불편 제보(동적)는 모두 머티드 레드 — 종류는 아이콘으로, 심각도는 배지로 구분
+  elevator_outage: { label: '엘리베이터 고장', icon: 'elevator', color: C.redMarker },
+  construction: { label: '공사/보도 차단', icon: 'construction', color: C.redMarker },
+  curb_step: { label: '턱/계단', icon: 'step', color: C.redMarker },
+  steep_slope: { label: '급경사', icon: 'slope', color: C.redMarker },
+  tactile_block: { label: '점자블록 문제', icon: 'tactile', color: C.redMarker },
+  obstacle: { label: '장애물/적치물', icon: 'warning', color: C.redMarker },
+  toilet_issue: { label: '장애인 화장실 문제', icon: 'toilet', color: C.redMarker },
+  guide_dog_issue: { label: '안내견 출입 문제', icon: 'dog', color: C.redMarker },
+  ramp_issue: { label: '경사로 이용 어려움', icon: 'ramp', color: C.redMarker },
+  slippery: { label: '길 미끄러움', icon: 'water', color: C.redMarker },
+  etc: { label: '기타 이동 불편', icon: 'warning', color: C.gray },
 };
 
 export const REPORT_CATEGORY_ORDER: ReportCategory[] = [
@@ -138,15 +164,16 @@ export const MAP_FILTER_META: Record<
   MapCategoryFilter,
   { label: string; icon: string; color: string }
 > = {
-  elevator: { label: '엘리베이터', icon: 'elevator', color: '#3b82f6' },
+  // 필터 칩은 켜졌을 때 모두 틸 — 종류는 아이콘+라벨로 구분
+  elevator: { label: '엘리베이터', icon: 'elevator', color: '#0e9e8b' },
   toilet: { label: '화장실', icon: 'toilet', color: '#0e9e8b' },
-  ramp: { label: '경사로', icon: 'ramp', color: '#8f6ae6' },
-  construction: { label: '공사', icon: 'construction', color: '#f5b921' },
-  step: { label: '턱/계단', icon: 'step', color: '#ff6b52' },
-  tactile: { label: '점자블록', icon: 'tactile', color: '#27408b' },
-  obstacle: { label: '장애물', icon: 'warning', color: '#ed4f34' },
-  guide_dog: { label: '안내견', icon: 'dog', color: '#8f6ae6' },
-  smoking: { label: '보조 정보: 간접흡연 주의 구역', icon: 'smoking', color: '#7c8aa0' },
+  ramp: { label: '경사로', icon: 'ramp', color: '#0e9e8b' },
+  construction: { label: '공사', icon: 'construction', color: '#0e9e8b' },
+  step: { label: '턱/계단', icon: 'step', color: '#0e9e8b' },
+  tactile: { label: '점자블록', icon: 'tactile', color: '#0e9e8b' },
+  obstacle: { label: '장애물', icon: 'warning', color: '#0e9e8b' },
+  guide_dog: { label: '안내견', icon: 'dog', color: '#0e9e8b' },
+  smoking: { label: '보조 정보: 간접흡연 주의 구역', icon: 'smoking', color: C.aux },
 };
 
 export const MAP_FILTER_ORDER: MapCategoryFilter[] = [
@@ -174,9 +201,9 @@ export const SEVERITY_META: Record<
   Severity,
   { label: string; color: string; bg: string }
 > = {
-  low: { label: '낮음', color: '#16a35e', bg: '#dcfce9' },
-  medium: { label: '보통', color: '#d99708', bg: '#fef6d8' },
-  high: { label: '높음', color: '#c83a22', bg: '#ffe6e2' },
+  low: { label: '낮음', color: C.gray, bg: C.grayBg },
+  medium: { label: '보통', color: C.amber, bg: C.amberBg },
+  high: { label: '높음', color: C.red, bg: C.redBg },
 };
 
 // ---- 제보 상태 ----
@@ -184,9 +211,9 @@ export const STATUS_META: Record<
   ReportStatus,
   { label: string; color: string; bg: string }
 > = {
-  active: { label: '진행 중', color: '#c83a22', bg: '#ffe6e2' },
-  resolved: { label: '해결됨', color: '#16a35e', bg: '#dcfce9' },
-  needs_check: { label: '확인 필요', color: '#d99708', bg: '#fef6d8' },
+  active: { label: '진행 중', color: C.red, bg: C.redBg },
+  resolved: { label: '해결됨', color: C.teal, bg: C.tealBg },
+  needs_check: { label: '확인 필요', color: C.amber, bg: C.amberBg },
 };
 
 // ---- 제보 신뢰도 등급 ----
@@ -194,9 +221,9 @@ export const CONFIDENCE_META: Record<
   ReportConfidence,
   { label: string; color: string; bg: string }
 > = {
-  높음: { label: '신뢰도 높음', color: '#0a8174', bg: '#dcf3ee' },
-  보통: { label: '신뢰도 보통', color: '#d99708', bg: '#fef6d8' },
-  낮음: { label: '신뢰도 낮음', color: '#8a93a0', bg: '#eef0ee' },
+  높음: { label: '신뢰도 높음', color: C.teal, bg: C.tealBg },
+  보통: { label: '신뢰도 보통', color: C.gray, bg: C.grayBg },
+  낮음: { label: '신뢰도 낮음', color: C.grayLight, bg: C.grayBg },
 };
 
 // ---- 신뢰도 기반 제보 상태 ----
@@ -204,11 +231,11 @@ export const TRUST_STATUS_META: Record<
   ReportTrustStatus,
   { label: string; color: string; bg: string }
 > = {
-  활성: { label: '활성', color: '#c83a22', bg: '#ffe6e2' },
-  '확인 필요': { label: '확인 필요', color: '#d99708', bg: '#fef6d8' },
-  '만료 예정': { label: '만료 예정', color: '#a16207', bg: '#fdf0d5' },
-  해결됨: { label: '해결됨', color: '#16a35e', bg: '#dcfce9' },
-  '반박 있음': { label: '반박 있음', color: '#6b46c1', bg: '#efeafe' },
+  활성: { label: '활성', color: C.red, bg: C.redBg },
+  '확인 필요': { label: '확인 필요', color: C.amber, bg: C.amberBg },
+  '만료 예정': { label: '만료 예정', color: C.gray, bg: C.grayBg },
+  해결됨: { label: '해결됨', color: C.teal, bg: C.tealBg },
+  '반박 있음': { label: '반박 있음', color: C.slate, bg: C.slateBg },
 };
 
 // ---- 대상자 ----
@@ -291,16 +318,17 @@ export const COMMUNITY_TYPE_META: Record<
   CommunityPostType,
   { label: string; icon: string; color: string; bg: string }
 > = {
-  report: { label: '실시간 제보', icon: 'location', color: '#c83a22', bg: '#ffe6e2' },
-  facility_status: { label: '시설 상태', icon: 'elevator', color: '#2563eb', bg: '#dbeafe' },
-  review: { label: '이용 후기', icon: 'star', color: '#8f6ae6', bg: '#efeafe' },
-  question: { label: '질문', icon: 'help', color: '#d99708', bg: '#fef6d8' },
-  resolved: { label: '해결·복구', icon: 'check', color: '#16a35e', bg: '#dcfce9' },
+  // 게시글 유형 배지는 모두 중립색 — 의미 색은 상태 배지가 담당
+  report: { label: '실시간 제보', icon: 'location', color: C.red, bg: C.redBg },
+  facility_status: { label: '시설 상태', icon: 'elevator', color: C.slate, bg: C.slateBg },
+  review: { label: '이용 후기', icon: 'star', color: C.slate, bg: C.slateBg },
+  question: { label: '질문', icon: 'help', color: C.slate, bg: C.slateBg },
+  resolved: { label: '해결·복구', icon: 'check', color: C.teal, bg: C.tealBg },
   // ---- 보호자 관련 카테고리 ----
-  guardian_question: { label: '보호자 질문', icon: 'shield', color: '#0a8174', bg: '#dcf3ee' },
-  hospital_companion: { label: '병원 동행 후기', icon: 'hospital', color: '#ed4f34', bg: '#ffe6e2' },
-  parent_route: { label: '부모님 이동 경로', icon: 'elderly', color: '#2563eb', bg: '#dbeafe' },
-  stroller_tip: { label: '유모차 동행 팁', icon: 'stroller', color: '#8f6ae6', bg: '#efeafe' },
+  guardian_question: { label: '보호자 질문', icon: 'shield', color: C.slate, bg: C.slateBg },
+  hospital_companion: { label: '병원 동행 후기', icon: 'hospital', color: C.slate, bg: C.slateBg },
+  parent_route: { label: '부모님 이동 경로', icon: 'elderly', color: C.slate, bg: C.slateBg },
+  stroller_tip: { label: '유모차 동행 팁', icon: 'stroller', color: C.slate, bg: C.slateBg },
 };
 
 export const COMMUNITY_TYPE_ORDER: CommunityPostType[] = [
@@ -328,10 +356,10 @@ export const COMMUNITY_STATUS_META: Record<
   CommunityPostStatus,
   { label: string; color: string; bg: string; icon: string }
 > = {
-  needs_check: { label: '확인 필요', color: '#d99708', bg: '#fef6d8', icon: 'warning' },
-  available: { label: '현재 이용 가능', color: '#16a35e', bg: '#dcfce9', icon: 'ramp' },
-  unavailable: { label: '이용 어려움', color: '#c83a22', bg: '#ffe6e2', icon: 'step' },
-  resolved: { label: '해결됨', color: '#0a8174', bg: '#dcf3ee', icon: 'ramp' },
+  needs_check: { label: '확인 필요', color: C.amber, bg: C.amberBg, icon: 'warning' },
+  available: { label: '현재 이용 가능', color: C.teal, bg: C.tealBg, icon: 'ramp' },
+  unavailable: { label: '이용 어려움', color: C.red, bg: C.redBg, icon: 'step' },
+  resolved: { label: '해결됨', color: C.gray, bg: C.grayBg, icon: 'ramp' },
 };
 
 export const COMMUNITY_STATUS_ORDER: CommunityPostStatus[] = [

@@ -152,11 +152,11 @@ export function MapBottomSheet({
             </PrimaryButton>
           </div>
 
-          {/* 통계 3분할 */}
+          {/* 통계 3분할 — 아이콘은 중립색, 숫자가 정보를 전달 */}
           <div className="mt-3 grid grid-cols-3 gap-2">
-            <MiniStat icon="building" color="#2563eb" value={stats.usable} label="이용 가능 시설" />
-            <MiniStat icon="warning" color="#c83a22" value={stats.active} label="활성 제보" />
-            <MiniStat icon="construction" color="#d99708" value={stats.caution} label="이동 주의 구간" />
+            <MiniStat icon="building" color="#5c708a" value={stats.usable} label="이용 가능 시설" />
+            <MiniStat icon="warning" color="#c0452f" value={stats.active} label="활성 제보" />
+            <MiniStat icon="construction" color="#5b6675" value={stats.caution} label="이동 주의 구간" />
           </div>
 
           {/* 핵심 메시지 + MVP 테스트 지역 안내 (FULL 에서 노출) */}

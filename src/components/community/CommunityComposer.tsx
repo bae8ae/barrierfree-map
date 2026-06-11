@@ -167,7 +167,7 @@ export function CommunityComposer({
                 setLocationName('지도에서 선택한 위치');
                 setCoords({ ...REGION_CENTER });
               }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-publicblue-300 py-2.5 text-sm font-bold text-publicblue-600"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#cfd6de] py-2.5 text-sm font-bold text-[#5c708a]"
             >
               <Icon name="building" size={16} />
               지도에서 선택

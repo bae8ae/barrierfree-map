@@ -93,7 +93,7 @@ export function GuardianScreen() {
     <div className="flex h-full flex-col">
       <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8 pt-3">
         {/* 안내 배너 */}
-        <div className="mb-3 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-500 p-4 text-white shadow-float">
+        <div className="mb-3 rounded-2xl bg-primary-600 p-4 text-white shadow-card">
           <div className="flex items-center gap-2">
             <Icon name="shield" size={20} />
             <p className="text-sm font-extrabold">보호자 안심 공유</p>
@@ -137,7 +137,7 @@ export function GuardianScreen() {
                 <p className="text-xs font-medium text-subtle">{g.phoneMasked}</p>
               </div>
               {sharing && (
-                <span className="rounded-full bg-mint-100 px-2 py-1 text-[11px] font-bold text-mint-600">
+                <span className="rounded-full bg-primary-50 px-2 py-1 text-[11px] font-bold text-primary-700">
                   공유 중
                 </span>
               )}
@@ -208,7 +208,7 @@ export function GuardianScreen() {
             onClick={() =>
               showToast('응급 알림을 등록된 보호자 전원에게 보냈어요. (데모)', 'warn')
             }
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-coral-600 px-5 py-3.5 text-base font-bold text-white transition-colors active:scale-[0.98] hover:bg-coral-700"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#d9573f] px-5 py-3.5 text-base font-bold text-white transition-colors active:scale-[0.98] hover:bg-[#c64b34]"
           >
             <Icon name="warning" size={20} />
             응급 알림 보내기
@@ -356,13 +356,13 @@ function GuardianView({
 function FutureFeaturesCard() {
   return (
     <section className="mt-6">
-      <div className="rounded-2xl border border-lavender-300 bg-lavender-100 p-4">
+      <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-extrabold" style={{ color: '#6b46c1' }}>
+          <p className="text-sm font-extrabold text-ink">
             향후 고도화 기능 (선택형 검토 예정)
           </p>
         </div>
-        <p className="mt-1 text-[12px] font-medium leading-snug" style={{ color: '#6b46c1' }}>
+        <p className="mt-1 text-[12px] font-medium leading-snug text-subtle">
           안전에 필요한 기본 보호자 공유 기능은 앞으로도 무료로 제공됩니다. 아래 기능은
           향후 선택형 기능으로 검토하고 있어요.
         </p>
@@ -370,8 +370,7 @@ function FutureFeaturesCard() {
           {GUARDIAN_FUTURE_FEATURES.map((f) => (
             <li
               key={f}
-              className="flex items-center gap-2 rounded-xl bg-white/70 px-3 py-2 text-[13px] font-semibold"
-              style={{ color: '#6b46c1' }}
+              className="flex items-center gap-2 rounded-xl bg-cream px-3 py-2 text-[13px] font-semibold text-subtle"
             >
               <span aria-hidden>○</span>
               {f}

@@ -49,7 +49,7 @@ export function MyScreen() {
               type="button"
               onClick={() => setReportOpen((v) => !v)}
               aria-expanded={reportOpen}
-              className="flex w-full items-center gap-3 rounded-2xl bg-gradient-to-br from-publicblue-600 to-publicblue-500 p-4 text-left text-white shadow-card"
+              className="flex w-full items-center gap-3 rounded-2xl bg-ink p-4 text-left text-white shadow-card"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
                 <Icon name="building" size={22} />

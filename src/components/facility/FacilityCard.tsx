@@ -55,7 +55,7 @@ export function FacilityCard({
       {/* 가능 속성 배지 */}
       <div className="mt-2.5 flex flex-wrap gap-1.5">
         {caps.length === 0 ? (
-          <span className="rounded-full bg-coral-100 px-2 py-0.5 text-[11px] font-bold text-coral-700">
+          <span className="rounded-full bg-[#eef0ee] px-2 py-0.5 text-[11px] font-bold text-subtle">
             접근성 정보 부족
           </span>
         ) : (

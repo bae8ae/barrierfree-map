@@ -99,7 +99,7 @@ export function CommunityPostCard({
         <button
           type="button"
           onClick={() => confirmPostAction(post.id)}
-          className="flex items-center justify-center gap-1.5 rounded-xl bg-mint-100 px-2 py-2.5 text-sm font-bold text-mint-600 transition-colors hover:brightness-95"
+          className="flex items-center justify-center gap-1.5 rounded-xl bg-primary-50 px-2 py-2.5 text-sm font-bold text-primary-700 transition-colors hover:brightness-95"
         >
           나도 확인 {post.confirmations}
         </button>
@@ -117,7 +117,7 @@ export function CommunityPostCard({
         <button
           type="button"
           onClick={() => onViewOnMap(post)}
-          className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[13px] font-bold text-publicblue-600 hover:bg-publicblue-100"
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[13px] font-bold text-primary-600 hover:bg-primary-50"
         >
           <Icon name="route" size={15} />
           지도에서 보기

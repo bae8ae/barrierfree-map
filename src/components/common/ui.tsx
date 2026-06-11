@@ -99,10 +99,10 @@ export function Stat({
 }) {
   const toneColor: Record<string, string> = {
     default: '#0a8174',
-    danger: '#c83a22',
-    success: '#16a35e',
-    caution: '#d99708',
-    blue: '#2563eb',
+    danger: '#c0452f',
+    success: '#0a8174',
+    caution: '#a16207',
+    blue: '#5c708a',
   };
   return (
     <div className="flex flex-col gap-1 rounded-2xl bg-white p-4 shadow-card">
@@ -232,7 +232,7 @@ export function PrimaryButton({
     'inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-base font-bold transition-all active:scale-[0.98] disabled:opacity-40';
   const styles: Record<string, string> = {
     primary: 'bg-primary-500 text-white shadow-float hover:bg-primary-600',
-    coral: 'bg-coral-600 text-white hover:bg-coral-700',
+    coral: 'bg-[#d9573f] text-white hover:bg-[#c64b34]',
     outline: 'border-2 border-primary-300 bg-white text-primary-600',
   };
   return (

@@ -102,8 +102,8 @@ function ReverifyButton({
 }) {
   const styles: Record<string, { bg: string; color: string }> = {
     default: { bg: '#f1ede4', color: '#3a4452' },
-    mint: { bg: '#dcfce9', color: '#16a35e' },
-    coral: { bg: '#ffe6e2', color: '#c83a22' },
+    mint: { bg: '#e3f2ef', color: '#0a8174' },
+    coral: { bg: '#fbe9e5', color: '#c0452f' },
   };
   const s = styles[tone];
   return (

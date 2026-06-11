@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { FacilityCategory } from '@/types';
 import { useStore } from '@/store/useStore';
-import { FACILITY_META } from '@/utils/meta';
 import { FacilityCard } from '@/components/facility/FacilityCard';
 import { EmptyState } from '@/components/common/ui';
 
@@ -41,7 +40,6 @@ export function FacilityScreen() {
         <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4">
           {FILTERS.map((f) => {
             const active = filter === f.key;
-            const color = f.key === 'all' ? '#0e9e8b' : FACILITY_META[f.key as FacilityCategory].color;
             return (
               <button
                 key={f.key}
@@ -50,8 +48,8 @@ export function FacilityScreen() {
                 onClick={() => setFilter(f.key)}
                 className="shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-bold transition-colors"
                 style={{
-                  borderColor: active ? color : '#e3ded3',
-                  background: active ? color : '#fff',
+                  borderColor: active ? '#0e9e8b' : '#e3ded3',
+                  background: active ? '#0e9e8b' : '#fff',
                   color: active ? '#fff' : '#5b6675',
                 }}
               >

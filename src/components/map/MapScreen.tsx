@@ -103,7 +103,7 @@ export function MapScreen({
             <Icon name="route" size={16} />
           </div>
           <p className="text-sm font-extrabold leading-none text-ink">BarrierFree Map</p>
-          <span className="ml-auto rounded-full bg-caution-100 px-2.5 py-1 text-[10px] font-bold text-caution-600 shadow-sm">
+          <span className="ml-auto rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold text-subtle shadow-sm">
             {MVP_TEST_BADGE}
           </span>
         </div>
@@ -368,7 +368,7 @@ function PeekAction({
       className="rounded-xl px-2 py-2 text-xs font-bold transition-colors disabled:opacity-40"
       style={
         tone === 'mint'
-          ? { background: '#dcfce9', color: '#16a35e' }
+          ? { background: '#e3f2ef', color: '#0a8174' }
           : { background: '#f1ede4', color: '#3a4452' }
       }
     >
