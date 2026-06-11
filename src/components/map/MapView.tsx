@@ -19,6 +19,7 @@ import {
   COMMUNITY_STATUS_META,
   SMOKING_VISIBLE_MODES,
 } from '@/utils/meta';
+import { Icon } from '@/components/common/Icon';
 import { FacilityMarker } from '@/components/map/FacilityMarker';
 import { ReportMarker } from '@/components/map/ReportMarker';
 import { CommunityMarker } from '@/components/map/CommunityMarker';
@@ -123,6 +124,9 @@ export function MapView({
   const mode = useStore((s) => s.mode);
   const mapFilters = useStore((s) => s.mapFilters);
   const selectedFacilityId = useStore((s) => s.selectedFacilityId);
+
+  // 복합핀 클릭 시 멤버 목록 선택 패널 (바로 줌인하지 않고 항목을 보여준다)
+  const [chooser, setChooser] = useState<MapPoint[] | null>(null);
 
   // ---- 확대/이동 상태 ----
   // 인터랙티브 지도는 현재 위치 주변을 확대한 상태로 시작 (드래그 이동 가능)
@@ -351,6 +355,8 @@ export function MapView({
     const el = containerRef.current;
     if (!el || !interactive) return;
     const onWheel = (e: WheelEvent) => {
+      // 복합핀 목록 패널 위에서는 목록 스크롤이 우선
+      if ((e.target as HTMLElement).closest('[data-map-chooser]')) return;
       e.preventDefault();
       const rect = el.getBoundingClientRect();
       const cvx = ((e.clientX - rect.left) / rect.width) * 100;
@@ -532,7 +538,7 @@ export function MapView({
             count={cl.members.length}
             colors={colors}
             alert={alert}
-            onClick={() => expandCluster(cl.members)}
+            onClick={() => setChooser(cl.members)}
           />
         );
       })}
@@ -570,8 +576,115 @@ export function MapView({
         )}
       </div>
       )}
+
+      {/* 복합핀 항목 선택 패널: 묶인 정보를 목록으로 보여주고 골라서 연다 */}
+      {chooser && (
+        <div
+          data-map-chooser
+          className="absolute inset-x-3 z-40"
+          style={{ bottom: controlsBottom }}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <div className="animate-popIn rounded-2xl border border-black/5 bg-white p-3 shadow-sheet">
+            <div className="flex items-center gap-2 pb-1.5">
+              <p className="flex-1 text-sm font-extrabold text-ink">
+                이 위치의 정보 {chooser.length}건
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  expandCluster(chooser);
+                  setChooser(null);
+                }}
+                className="rounded-full bg-primary-50 px-2.5 py-1 text-[11px] font-bold text-primary-700"
+              >
+                확대해서 보기
+              </button>
+              <button
+                type="button"
+                onClick={() => setChooser(null)}
+                aria-label="닫기"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-black/5 text-subtle"
+              >
+                ✕
+              </button>
+            </div>
+            <ul className="no-scrollbar max-h-52 space-y-1 overflow-y-auto">
+              {chooser.map((p) => {
+                const it = pointInfo(p);
+                return (
+                  <li key={p.key}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setChooser(null);
+                        pickPoint(p);
+                      }}
+                      className="flex w-full items-center gap-2.5 rounded-xl px-2 py-2 text-left transition-colors hover:bg-black/5"
+                    >
+                      <span
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white"
+                        style={{ background: p.color }}
+                      >
+                        <Icon name={it.icon as never} size={16} />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[13px] font-bold text-ink">
+                          {it.title}
+                        </span>
+                        <span className="block text-[11px] font-medium text-subtle">
+                          {it.sub}
+                        </span>
+                      </span>
+                      {p.alert && (
+                        <span className="shrink-0 rounded-full bg-[#fbe9e5] px-2 py-0.5 text-[10px] font-bold text-[#c0452f]">
+                          주의
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
+
+  // 군집 멤버의 목록 표기용 제목/부제/아이콘
+  function pointInfo(p: MapPoint): { title: string; sub: string; icon: string } {
+    if (p.kind === 'facility') {
+      return {
+        title: p.data.name,
+        sub: `시설 · ${FACILITY_META[p.data.category].label}`,
+        icon: FACILITY_META[p.data.category].icon,
+      };
+    }
+    if (p.kind === 'report') {
+      return {
+        title: p.data.title,
+        sub: `불편 제보 · ${REPORT_META[p.data.category].label}`,
+        icon: REPORT_META[p.data.category].icon,
+      };
+    }
+    if (p.kind === 'smoking') {
+      return { title: p.data.name, sub: '보조 정보 · 간접흡연 주의 구역', icon: 'smoking' };
+    }
+    return {
+      title: p.data.title,
+      sub: `커뮤니티 · ${COMMUNITY_STATUS_META[p.data.status].label}`,
+      icon: COMMUNITY_STATUS_META[p.data.status].icon,
+    };
+  }
+
+  // 목록에서 항목을 고르면 개별 마커 클릭과 동일하게 동작
+  function pickPoint(p: MapPoint) {
+    if (p.kind === 'facility') onSelectFacility?.(p.data.id);
+    else if (p.kind === 'report') onSelectReport?.(p.data.id);
+    else if (p.kind === 'smoking') onSelectSmoking?.(p.data.id);
+    else onSelectPost?.(p.data.id);
+  }
 
   // 개별 점을 종류에 맞는 마커로 렌더
   function renderPoint(p: MapPoint) {

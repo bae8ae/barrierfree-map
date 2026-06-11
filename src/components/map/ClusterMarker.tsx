@@ -1,7 +1,7 @@
 // ============================================================
 // 복합(군집) 마커
 // 지도 확대 정도에서 서로 겹치는 마커들을 하나로 묶어 표시.
-// 클릭하면 해당 지점으로 확대되어 개별 마커로 나뉜다.
+// 클릭하면 묶인 정보 목록이 열려 항목을 골라 볼 수 있다.
 // ============================================================
 
 export function ClusterMarker({
@@ -30,7 +30,7 @@ export function ClusterMarker({
     <button
       type="button"
       onClick={onClick}
-      aria-label={`이 지점에 ${count}개의 정보가 모여 있어요. 눌러서 확대하면 개별로 볼 수 있어요`}
+      aria-label={`이 지점에 ${count}개의 정보가 모여 있어요. 눌러서 목록을 확인하세요`}
       className="absolute -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:z-30"
       style={{ left: `${x}%`, top: `${y}%`, zIndex: 18 }}
     >
@@ -53,7 +53,7 @@ export function ClusterMarker({
             width: size,
             height: size,
             background: alert
-              ? 'radial-gradient(circle at 30% 25%, #ff8a72, #ed4f34)'
+              ? 'radial-gradient(circle at 30% 25%, #e8927c, #d9573f)'
               : 'radial-gradient(circle at 30% 25%, #36c2ae, #0a8174)',
             fontSize: count > 9 ? 14 : 16,
           }}
